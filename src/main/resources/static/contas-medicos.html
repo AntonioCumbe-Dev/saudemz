@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contas dos Médicos | Saúde+ MZ</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f5f7;
+            margin: 0;
+            padding: 35px 20px;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .cabecalho {
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 18px;
+            margin-bottom: 22px;
+        }
+
+        .cabecalho h2 {
+            color: #174a7e;
+            font-size: 23px;
+            margin: 0 0 9px;
+        }
+
+        .cabecalho p {
+            color: #777777;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #444444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8dce1;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #ffffff;
+            color: #333333;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #174a7e;
+            box-shadow: 0 0 0 2px rgba(23, 74, 126, 0.08);
+        }
+
+        .nota {
+            font-size: 12px;
+            color: #777777;
+            margin-top: 7px;
+        }
+
+        .acoes {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 28px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #174a7e;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #123b65;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #mensagem {
+            display: none;
+            margin-top: 22px;
+            padding: 13px;
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .sucesso {
+            display: block !important;
+            background: #f0f3f6;
+            color: #174a7e;
+            border-left: 4px solid #174a7e;
+        }
+
+        .erro {
+            display: block !important;
+            background: #fbecee;
+            color: #b02a37;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 22px;
+                margin: 10px auto;
+            }
+
+            .acoes button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header class="cabecalho">
+            <h2>Criar conta de médico</h2>
+            <p>
+                Registe os dados de acesso e associe a conta
+                ao médico já existente no sistema.
+            </p>
+        </header>
+
+        <form id="formConta">
+
+            <div class="campo">
+                <label for="medicoId">Médico</label>
+
+                <select id="medicoId" required>
+                    <option value="">A carregar médicos...</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="nome">Nome do utilizador</label>
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Nome completo"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="email">Email de acesso</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="exemplo@email.com"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="senha">Senha inicial</label>
+                <input
+                    type="password"
+                    id="senha"
+                    minlength="8"
+                    placeholder="Mínimo de 8 caracteres"
+                    required
+                >
+                <p class="nota">
+                    A senha será armazenada de forma protegida.
+                </p>
+            </div>
+
+            <div class="acoes">
+                <button type="submit" id="botaoCriar">
+                    Criar conta
+                </button>
+            </div>
+
+        </form>
+
+        <div id="mensagem" role="status" aria-live="polite"></div>
+
+    </main>
+
+    <script>
+        const selectMedico = document.getElementById("medicoId");
+        const formulario = document.getElementById("formConta");
+        const mensagem = document.getElementById("mensagem");
+        const botaoCriar = document.getElementById("botaoCriar");
+
+        function mostrarMensagem(texto, tipo) {
+            mensagem.textContent = texto;
+            mensagem.className = tipo;
+        }
+
+        function obterTokenCSRF() {
+            const cookie = document.cookie
+                .split("; ")
+                .find(item => item.startsWith("XSRF-TOKEN="));
+
+            return cookie
+                ? decodeURIComponent(
+                    cookie.substring("XSRF-TOKEN=".length)
+                )
+                : null;
+        }
+
+        async function carregarMedicos() {
+            try {
+                const resposta = await fetch("/medicos");
+
+                if (!resposta.ok) {
+                    throw new Error("Não foi possível carregar os médicos.");
+                }
+
+                const medicos = await resposta.json();
+
+                selectMedico.innerHTML =
+                    '<option value="">Seleccione um médico</option>';
+
+                medicos.forEach(medico => {
+                    const opcao = document.createElement("option");
+
+                    opcao.value = medico.id;
+                    opcao.textContent =
+                        medico.nome + " - " + medico.especialidade;
+
+                    selectMedico.appendChild(opcao);
+                });
+
+            } catch (erro) {
+                selectMedico.innerHTML =
+                    '<option value="">Erro ao carregar médicos</option>';
+
+                mostrarMensagem(erro.message, "erro");
+            }
+        }
+
+        formulario.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const token = obterTokenCSRF();
+
+            if (!token) {
+                mostrarMensagem(
+                    "Não foi possível obter o token de segurança. Actualize a página.",
+                    "erro"
+                );
+                return;
+            }
+
+            const dados = {
+                nome: document.getElementById("nome").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                senha: document.getElementById("senha").value,
+                medicoId: Number(selectMedico.value)
+            };
+
+            botaoCriar.disabled = true;
+            botaoCriar.textContent = "A criar conta...";
+
+            try {
+                const resposta = await fetch("/usuarios/medicos", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": token
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await resposta.json();
+
+                if (!resposta.ok) {
+                    throw new Error(
+                        resultado.message ||
+                        resultado.mensagem ||
+                        "Não foi possível criar a conta."
+                    );
+                }
+
+                mostrarMensagem(
+                    resultado.mensagem,
+                    "sucesso"
+                );
+
+                formulario.reset();
+
+            } catch (erro) {
+                mostrarMensagem(erro.message, "erro");
+
+            } finally {
+                botaoCriar.disabled = false;
+                botaoCriar.textContent = "Criar conta";
+            }
+        });
+
+        carregarMedicos();
+    </script>
+
+</body>
+</html>

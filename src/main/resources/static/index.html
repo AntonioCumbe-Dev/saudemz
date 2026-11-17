@@ -1,0 +1,2998 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f7fa">
+<title>Saúde+ MZ | Gestão Clínica</title>
+<style>
+:root{--fundo:#f5f7fa;--superficie:#fff;--suave:#f8fafc;--texto:#263445;--texto-suave:#718096;--borda:#e6ebf1;--azul:#2867a8;--azul-escuro:#1d4f83;--azul-suave:#edf4fb;--verde:#23845b;--verde-suave:#eaf6ef;--laranja:#b7791f;--laranja-suave:#fff6e5;--vermelho:#bd4545;--vermelho-suave:#fff0f0;--sombra:0 5px 20px rgba(31,51,73,.045);--raio:12px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--texto);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:14px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 16px;font-size:13px;font-weight:600}
+button:disabled{opacity:.6;cursor:not-allowed}
+[hidden]{display:none!important}
+.topo{min-height:76px;background:white;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(18px,4vw,54px)}
+.marca{display:flex;align-items:center;gap:12px}
+.marca-simbolo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--azul-suave);color:var(--azul);font-size:25px;font-weight:700}
+.marca h1{margin:0;font-size:20px;color:#29445f}
+.marca p{margin:4px 0 0;font-size:12px;color:var(--texto-suave)}
+.utilizador{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.identidade{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.email{color:var(--texto-suave);font-size:12px}
+.perfil{color:var(--azul-escuro);background:var(--azul-suave);border-radius:20px;padding:5px 10px;font-size:10px;font-weight:700}
+.barra-navegacao{background:white;border-bottom:1px solid var(--borda);padding:0 clamp(12px,4vw,54px);display:flex;gap:5px;overflow-x:auto}
+.barra-navegacao button{background:transparent;border-radius:0;padding:15px 14px;color:#687789;border-bottom:2px solid transparent;white-space:nowrap}
+.barra-navegacao button:hover,.barra-navegacao button.active{color:var(--azul);border-bottom-color:var(--azul)}
+main{width:min(1320px,100%);margin:28px auto 50px;padding:0 24px}
+.secao{display:none}
+.secao.active{display:block}
+.cabecalho-pagina{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 22px;flex-wrap:wrap}
+.cabecalho-pagina h2{margin:0;font-size:23px;color:#2b4056}
+.cabecalho-pagina p{margin:6px 0 0;color:var(--texto-suave);font-size:13px}
+.boas-vindas{padding:25px;background:white;border:1px solid var(--borda);border-radius:var(--raio);margin-bottom:20px;box-shadow:var(--sombra);display:flex;justify-content:space-between;align-items:center;gap:18px}
+.boas-vindas h2{margin:0 0 8px;color:#2b4056;font-size:22px}
+.boas-vindas p{margin:0;color:var(--texto-suave);line-height:1.6}
+.boas-vindas-simbolo{flex:0 0 58px;width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--azul-suave);color:var(--azul);font-size:27px}
+.indicadores,.grelha-cartoes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:21px}
+.indicador,.cartao-estatistica{background:white;border:1px solid var(--borda);border-radius:var(--raio);padding:18px;box-shadow:var(--sombra);min-height:100px}
+.indicador p,.cartao-estatistica span{margin:0;color:var(--texto-suave);font-size:12px}
+.indicador h2,.cartao-estatistica strong{display:block;margin:12px 0 0;color:#2d435a;font-size:27px}
+.grelha-painel{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.9fr);gap:18px}
+.painel,.cartao{background:white;border:1px solid var(--borda);border-radius:var(--raio);padding:21px;margin-bottom:18px;box-shadow:var(--sombra);min-width:0}
+.painel h2,.cartao h3{margin:0;color:#344b62;font-size:16px}
+.painel-cabecalho{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.subtitulo-painel{margin:5px 0 0;color:var(--texto-suave);font-size:12px}
+.atalhos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.atalho{min-height:100px;text-align:left;padding:16px;border:1px solid var(--borda);border-radius:10px;background:var(--suave);color:var(--texto)}
+.atalho:hover{border-color:#b9cfe4;background:#f4f8fc}
+.atalho strong{display:block;font-size:13px;margin-bottom:6px}
+.atalho span{color:var(--texto-suave);font-size:11px;line-height:1.4}
+.nota-informativa{padding:15px;border-radius:10px;background:var(--suave);border:1px solid var(--borda);color:var(--texto-suave);line-height:1.6;font-size:12px}
+form.formulario{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.campo{display:flex;flex-direction:column;gap:7px;min-width:0}
+.campo.completo{grid-column:1/-1}
+label{color:#526274;font-size:12px;font-weight:650}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #d8e0e8;border-radius:8px;font-size:13px;color:var(--texto);background:white;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#8db2d6;box-shadow:0 0 0 3px rgba(40,103,168,.09)}
+textarea{min-height:90px;resize:vertical}
+.btn-principal{background:var(--azul);color:white}
+.btn-principal:hover{background:var(--azul-escuro)}
+.btn-secundario{background:#f1f4f7;color:#536477;border:1px solid var(--borda)}
+.btn-perigo{background:var(--vermelho-suave);color:var(--vermelho)}
+.btn-pequeno{padding:7px 10px;font-size:11px;margin:2px}
+.mensagem{display:none;padding:12px 14px;border-radius:8px;margin:0 0 15px;font-size:12px;line-height:1.5}
+.mensagem.sucesso{display:block;background:var(--verde-suave);color:#226b49;border:1px solid #d4ebdc}
+.mensagem.erro{display:block;background:var(--vermelho-suave);color:#a13e3e;border:1px solid #f1d6d6}
+.tabela-container,.tabela-responsiva{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:4px;min-width:650px}
+th,td{padding:12px 13px;text-align:left;border-bottom:1px solid #edf0f4;font-size:12px;vertical-align:middle}
+th{background:#f7f9fb;color:#657487;font-weight:700;white-space:nowrap}
+tbody tr:hover{background:#fbfcfe}
+.estado{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.estado-marcada{background:var(--laranja-suave);color:#946817}
+.estado-concluida{background:var(--verde-suave);color:#24704c}
+.estado-cancelada{background:var(--vermelho-suave);color:#a13e3e}
+.vazio{color:var(--texto-suave);padding:22px 0;text-align:center;font-size:12px}
+.cartoes-medicos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.cartao-medico{background:white;border:1px solid var(--borda);border-radius:var(--raio);padding:19px;box-shadow:var(--sombra)}
+.cartao-medico h3{margin:0 0 8px;color:#344b62;font-size:15px}
+.cartao-medico p{margin:5px 0;color:var(--texto-suave);font-size:12px}
+.autenticacao{width:min(480px,100%);margin:25px auto}
+.autenticacao .painel{padding:25px}
+.autenticacao h2{margin:0 0 8px;font-size:21px;color:#2b4056}
+.autenticacao .descricao{color:var(--texto-suave);font-size:12px;margin:0 0 20px;line-height:1.5}
+.alternar-auth{margin-top:16px;text-align:center;color:var(--texto-suave);font-size:12px}
+.alternar-auth button{padding:4px;color:var(--azul);background:transparent}
+.graficos-dashboard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.barra-item{margin:16px 0}
+.barra-info{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:#526274;font-size:12px}
+.barra-fundo{height:10px;background:#edf1f5;border-radius:20px;overflow:hidden}
+.barra-progresso{height:100%;border-radius:20px}
+.barra-marcada{background:#d69e35}
+.barra-concluida{background:#35a276}
+.barra-cancelada{background:#d66b6b}
+.grafico-mensal{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:8px;align-items:end;min-height:190px;padding:15px 4px 0}
+.mes-grafico{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:180px;gap:6px;min-width:0}
+.mes-coluna{width:100%;max-width:27px;min-height:3px;background:#397bb8;border-radius:5px 5px 0 0}
+.mes-valor{font-size:10px;color:#526274}
+.mes-nome{font-size:9px;color:var(--texto-suave);overflow:hidden}
+.filtro-ano{max-width:180px}
+footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
+@media(max-width:900px){.indicadores,.grelha-cartoes{grid-template-columns:repeat(2,minmax(0,1fr))}.grelha-painel,.graficos-dashboard{grid-template-columns:1fr}}
+@media(max-width:650px){.topo{padding:13px 15px;align-items:flex-start}.identidade{align-items:flex-start}.barra-navegacao{padding:0 10px}.barra-navegacao button{padding:13px 11px;font-size:12px}main{margin-top:20px;padding:0 13px}.atalhos{grid-template-columns:repeat(2,minmax(0,1fr))}form.formulario{grid-template-columns:1fr}.campo.completo{grid-column:auto}.boas-vindas{padding:18px}.grafico-mensal{gap:3px}.mes-nome{font-size:8px}}
+@media(max-width:390px){.topo{flex-direction:column}.atalhos{grid-template-columns:1fr}}
+
+/* ESTADOS DAS CONSULTAS NO DASHBOARD */
+
+.estado-consulta {
+ display: inline-block;
+ padding: 5px 12px;
+ border-radius: 20px;
+ font-size: 12px;
+ font-weight: 600;
+ text-transform: uppercase;
+ letter-spacing: 0.3px;
+}
+
+.estado-consulta.marcada {
+ background: #fff3cd;
+ color: #856404;
+}
+
+.estado-consulta.concluida {
+ background: #d4edda;
+ color: #155724;
+}
+
+.estado-consulta.cancelada {
+ background: #f8d7da;
+ color: #721c24;
+}
+
+</style>
+</head>
+<body>
+<header class="topo">
+ <div class="marca"><div class="marca-simbolo">+</div><div><h1>Saúde+ MZ</h1><p>Sistema de Gestão Clínica</p></div></div>
+ <div class="utilizador" id="areaUtilizador" hidden><div class="identidade"><span id="emailUtilizador" class="email"></span><span id="perfilUtilizador" class="perfil"></span></div><button type="button" class="btn-secundario" id="botaoLogout">Terminar sessão</button></div>
+</header>
+<nav class="barra-navegacao" id="navegacaoPublica">
+ <button class="active" data-publico="inicioPublico">Início</button>
+ <button data-publico="medicosPublicos">Médicos</button>
+ <button data-publico="login">Entrar</button>
+ <button data-publico="cadastro">Criar conta</button>
+</nav>
+<nav class="barra-navegacao" id="navegacaoPrivada" hidden></nav>
+
+<main>
+<section id="inicioPublico" class="secao active">
+ <div class="boas-vindas">
+  <div><h2>Bem-vindo ao Saúde+ MZ</h2><p>Uma plataforma de gestão clínica para facilitar o acesso aos serviços de saúde, organizar consultas e aproximar pacientes e profissionais.</p><br><button class="btn-principal" onclick="mostrarPublico('login')">Aceder à plataforma</button> <button class="btn-secundario" onclick="mostrarPublico('medicosPublicos')">Conhecer médicos</button></div>
+  <div class="boas-vindas-simbolo">+</div>
+ </div>
+ <div class="grelha-painel">
+  <div class="painel"><h2>Os nossos serviços</h2><br><div class="atalhos"><div class="atalho"><strong>Consultas</strong><span>Organização e acompanhamento de consultas.</span></div><div class="atalho"><strong>Profissionais</strong><span>Conheça os médicos e as suas especialidades.</span></div><div class="atalho"><strong>Gestão clínica</strong><span>Gestão organizada de pacientes e atendimentos.</span></div></div></div>
+  <div class="painel"><h2>Como aceder?</h2><br><div class="nota-informativa"><strong>Pacientes:</strong> podem criar uma conta e iniciar sessão.<br><br><strong>Médicos:</strong> utilizam as credenciais fornecidas pela administração.<br><br><strong>Superutilizadores:</strong> acedem à gestão administrativa da clínica.</div></div>
+ </div>
+</section>
+
+<section id="medicosPublicos" class="secao">
+ <div class="cabecalho-pagina"><div><h2>Os nossos médicos</h2><p>Consulte os profissionais e as respectivas especialidades.</p></div><button class="btn-secundario" onclick="carregarMedicosPublicos()">Actualizar lista</button></div>
+ <div id="mensagemMedicosPublicos" class="mensagem"></div><div id="listaMedicosPublicos" class="cartoes-medicos"></div>
+</section>
+
+<section id="login" class="secao">
+ <div class="autenticacao"><div class="painel"><h2>Iniciar sessão</h2><p class="descricao">Introduza as suas credenciais para aceder à sua área de trabalho.</p>
+  <div id="mensagemLogin" class="mensagem"></div>
+  <form id="formLogin" class="formulario">
+   <div class="campo completo"><label for="loginEmail">Email</label><input type="email" id="loginEmail" required autocomplete="username"></div>
+   <div class="campo completo"><label for="loginSenha">Senha</label><input type="password" id="loginSenha" required autocomplete="current-password"></div>
+   <div class="campo completo"><button type="submit" class="btn-principal">Entrar</button></div>
+  </form>
+  <div class="alternar-auth">Ainda não tem conta? <button type="button" onclick="mostrarPublico('cadastro')">Criar conta de paciente</button></div>
+ </div></div>
+</section>
+
+<section id="cadastro" class="secao">
+ <div class="autenticacao"><div class="painel"><h2>Registo de paciente</h2><p class="descricao">Preencha os dados para criar a sua conta.</p>
+  <div id="mensagemCadastro" class="mensagem"></div>
+  <form id="formCadastro" class="formulario">
+   <div class="campo completo"><label for="cadNome">Nome completo</label><input id="cadNome" required></div>
+   <div class="campo"><label for="cadTelefone">Telefone</label><input id="cadTelefone" required></div>
+   <div class="campo"><label for="cadNascimento">Data de nascimento</label><input type="date" id="cadNascimento" required></div>
+   <div class="campo completo"><label for="cadEmail">Email</label><input type="email" id="cadEmail" required></div>
+   <div class="campo"><label for="cadSexo">Sexo</label><select id="cadSexo" required><option value="">Seleccione</option><option value="MASCULINO">Masculino</option><option value="FEMININO">Feminino</option></select></div>
+   <div class="campo"><label for="cadSenha">Senha</label><input type="password" id="cadSenha" minlength="8" required></div>
+   <div class="campo completo"><label for="cadEndereco">Endereço</label><input id="cadEndereco" required></div>
+   <div class="campo completo"><button type="submit" class="btn-principal">Criar conta</button></div>
+  </form>
+  <div class="alternar-auth">Já tem conta? <button type="button" onclick="mostrarPublico('login')">Iniciar sessão</button></div>
+ </div></div>
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- DASHBOARD DO SUPERUTILIZADOR -->
+<!-- ================================================= -->
+
+<section id="inicioAdmin" class="secao privada">
+
+    <div class="boas-vindas">
+
+        <div>
+            <h2>Painel administrativo</h2>
+
+            <p>Acompanhe os principais indicadores e a actividade da clínica.</p>
+
+            <p id="dataPainel" class="subtitulo-painel"></p>
+        </div>
+
+        <div class="boas-vindas-simbolo">+</div>
+
+    </div>
+
+
+    <!-- INDICADORES PRINCIPAIS -->
+
+    <div class="indicadores">
+
+        <div class="indicador">
+            <p>Total de pacientes</p>
+            <h2 id="totalPacientes">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Total de médicos</p>
+            <h2 id="totalMedicos">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Total de consultas</p>
+            <h2 id="totalConsultasAdmin">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Consultas de hoje</p>
+            <h2 id="consultasHojeAdmin">0</h2>
+        </div>
+
+    </div>
+
+
+    <!-- CONSULTAS DE HOJE -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+
+            <div>
+                <h2>Consultas de hoje</h2>
+
+                <p class="subtitulo-painel">
+                    Acompanhe as consultas agendadas para hoje.
+                </p>
+            </div>
+
+        </div>
+
+        <div id="tabelaConsultasHoje">
+            <p class="vazio">A carregar consultas...</p>
+        </div>
+
+        <p id="ultimaActualizacaoAgenda" class="subtitulo-painel">
+            Última actualização: ainda não realizada
+        </p>
+
+    </div>
+
+
+    <!-- PRÓXIMAS CONSULTAS -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+
+            <div>
+                <h2>Próximas consultas</h2>
+
+                <p class="subtitulo-painel">
+                    Consulte as próximas 10 consultas marcadas na clínica.
+                </p>
+            </div>
+
+        </div>
+
+        <div id="tabelaProximasConsultas">
+            <p class="vazio">A carregar próximas consultas...</p>
+        </div>
+
+    </div>
+
+
+    <!-- CONSULTAS POR ESTADO -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+
+            <div>
+                <h2>Consultas por estado</h2>
+
+                <p class="subtitulo-painel">
+                    Distribuição geral das consultas registadas.
+                </p>
+            </div>
+
+        </div>
+
+        <div id="graficoEstados">
+            <p class="vazio">A carregar indicadores...</p>
+        </div>
+
+    </div>
+
+
+    <!-- DESEMPENHO MENSAL -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+
+            <div>
+                <h2>Desempenho mensal</h2>
+
+                <p class="subtitulo-painel">
+                    Consultas ao longo do ano.
+                </p>
+            </div>
+
+            <div class="campo filtro-ano">
+                <label for="anoDashboard">Ano</label>
+                <input type="number" id="anoDashboard" min="2000" max="2100">
+            </div>
+
+        </div>
+
+        <div id="graficoMensal">
+            <p class="vazio">A carregar desempenho mensal...</p>
+        </div>
+
+        <div id="resumoAnual" class="nota-informativa"></div>
+
+    </div>
+	
+	<!-- DISPONIBILIDADE DOS MÉDICOS -->
+
+	<div class="painel">
+
+	    <div class="painel-cabecalho">
+
+	        <div>
+	            <h2>Horários dos médicos</h2>
+	            <p class="subtitulo-painel">
+	                Registe e consulte os dias e horários de atendimento.
+	            </p>
+	        </div>
+
+	    </div>
+
+	    <form id="formDisponibilidade">
+
+	        <div class="campo">
+	            <label for="disponibilidadeMedico">Médico</label>
+	            <select id="disponibilidadeMedico" required>
+	                <option value="">Seleccione o médico</option>
+	            </select>
+	        </div>
+
+	        <div class="campo">
+	            <label for="disponibilidadeDia">Dia da semana</label>
+	            <select id="disponibilidadeDia" required>
+	                <option value="">Seleccione o dia</option>
+	                <option value="MONDAY">Segunda-feira</option>
+	                <option value="TUESDAY">Terça-feira</option>
+	                <option value="WEDNESDAY">Quarta-feira</option>
+	                <option value="THURSDAY">Quinta-feira</option>
+	                <option value="FRIDAY">Sexta-feira</option>
+	                <option value="SATURDAY">Sábado</option>
+	                <option value="SUNDAY">Domingo</option>
+	            </select>
+	        </div>
+
+	        <div class="campo">
+	            <label for="disponibilidadeHoraInicio">Hora de início</label>
+	            <input type="time" id="disponibilidadeHoraInicio"
+	                   min="06:00" max="20:00" required>
+	        </div>
+
+	        <div class="campo">
+	            <label for="disponibilidadeHoraFim">Hora de fim</label>
+	            <input type="time" id="disponibilidadeHoraFim"
+	                   min="06:00" max="20:00" required>
+	        </div>
+
+	        <button type="submit" class="botao-principal">
+	            Registar horário
+	        </button>
+
+	        <p id="mensagemDisponibilidade"></p>
+
+	    </form>
+
+	    <div class="separador"></div>
+
+	    <h3>Disponibilidades registadas</h3>
+
+	    <div id="tabelaDisponibilidades">
+	        <p class="vazio">
+	            Seleccione um médico para consultar os seus horários.
+	        </p>
+	    </div>
+
+	</div>
+
+
+    <!-- ACESSOS RÁPIDOS -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+            <h2>Acessos rápidos</h2>
+        </div>
+
+        <div class="atalhos">
+
+            <button class="atalho" onclick="mostrarPrivado('pacientes')">
+                <strong>Pacientes</strong>
+                <span>Consultar e registar pacientes.</span>
+            </button>
+
+            <button class="atalho" onclick="mostrarPrivado('medicos')">
+                <strong>Médicos</strong>
+                <span>Gerir médicos e contas de acesso.</span>
+            </button>
+
+            <button class="atalho" onclick="mostrarPrivado('consultas')">
+                <strong>Consultas</strong>
+                <span>Marcar e acompanhar consultas.</span>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================================================= -->
+<!-- DASHBOARD DO MÉDICO -->
+<!-- ================================================= -->
+
+
+
+<section id="inicioMedico" class="secao privada">
+
+    <div class="boas-vindas">
+        <div>
+            <h2>Painel do médico</h2>
+            <p>Acompanhe a sua agenda e a actividade das suas consultas.</p>
+            <p id="dataPainelMedico" class="subtitulo-painel"></p>
+        </div>
+        <div class="boas-vindas-simbolo">+</div>
+    </div>
+
+    <!-- INDICADORES DO MÉDICO -->
+
+    <div class="indicadores">
+
+        <div class="indicador">
+            <p>Total de consultas</p>
+            <h2 id="totalConsultasMedico">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Consultas de hoje</p>
+            <h2 id="consultasHojeMedico">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Consultas marcadas</p>
+            <h2 id="consultasMarcadasMedico">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Consultas concluídas</p>
+            <h2 id="consultasConcluidasMedico">0</h2>
+        </div>
+
+        <div class="indicador">
+            <p>Consultas canceladas</p>
+            <h2 id="consultasCanceladasMedico">0</h2>
+        </div>
+
+    </div>
+
+    <!-- AGENDA DE HOJE -->
+
+    <div class="painel">
+        <div class="painel-cabecalho">
+            <div>
+                <h2>Minha agenda de hoje</h2>
+                <p class="subtitulo-painel">
+                    Consulte os pacientes e os horários das suas consultas.
+                </p>
+            </div>
+        </div>
+
+        <div id="tabelaConsultasHojeMedico">
+            <p class="vazio">A carregar consultas de hoje...</p>
+        </div>
+    </div>
+
+    <!-- PRÓXIMAS CONSULTAS -->
+
+    <div class="painel">
+        <div class="painel-cabecalho">
+            <div>
+                <h2>Próximas consultas</h2>
+                <p class="subtitulo-painel">
+                    Consulte os próximos agendamentos da sua agenda.
+                </p>
+            </div>
+        </div>
+
+        <div id="tabelaProximasConsultasMedico">
+            <p class="vazio">A carregar próximas consultas...</p>
+        </div>
+    </div>
+
+    <!-- HISTÓRICO DE CONSULTAS -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+            <div>
+                <h2>Histórico de consultas</h2>
+                <p class="subtitulo-painel">
+                    Consulte e filtre as consultas concluídas e canceladas.
+                </p>
+            </div>
+        </div>
+
+        <div class="filtros-historico">
+            <label for="filtroHistoricoMedico">Filtrar por estado:</label>
+
+            <select id="filtroHistoricoMedico">
+                <option value="TODOS">Todas as consultas</option>
+                <option value="CONCLUIDA">Concluídas</option>
+                <option value="CANCELADA">Canceladas</option>
+            </select>
+        </div>
+
+        <div id="tabelaHistoricoConsultasMedico">
+            <p class="vazio">A carregar histórico...</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="pacientes" class="secao privada">
+ <div class="cabecalho-pagina"><div><h2>Gestão de pacientes</h2><p>Registar e consultar pacientes.</p></div><button class="btn-secundario" onclick="carregarPacientes()">Actualizar</button></div>
+ <div id="mensagemPaciente" class="mensagem"></div>
+ <div class="painel"><h2>Registar paciente</h2><br><form id="formPaciente" class="formulario">
+  <div class="campo"><label for="pacienteNome">Nome completo</label><input id="pacienteNome" required></div>
+  <div class="campo"><label for="pacienteTelefone">Telefone</label><input id="pacienteTelefone" required></div>
+  <div class="campo"><label for="pacienteNascimento">Data de nascimento</label><input type="date" id="pacienteNascimento" required></div>
+  <div class="campo"><label for="pacienteEmail">Email</label><input type="email" id="pacienteEmail"></div>
+  <div class="campo"><label for="pacienteSenha">Senha de acesso</label><input type="password" id="pacienteSenha" minlength="8" required autocomplete="new-password"></div>
+  <div class="campo"><label for="pacienteSexo">Sexo</label><select id="pacienteSexo" required><option value="">Seleccione</option><option value="MASCULINO">Masculino</option><option value="FEMININO">Feminino</option></select></div>
+  <div class="campo"><label for="pacienteEndereco">Endereço</label><input id="pacienteEndereco"></div>
+  <div class="campo completo"><button class="btn-principal" type="submit">Registar paciente</button></div>
+ </form></div>
+ <div class="painel"><h2>Pacientes registados</h2><br><div class="tabela-container" id="tabelaPacientes"></div></div>
+</section>
+
+<section id="medicos" class="secao privada">
+ <div class="cabecalho-pagina"><div><h2>Gestão de médicos</h2><p>Registar e consultar profissionais.</p></div><button class="btn-secundario" onclick="carregarMedicos()">Actualizar</button></div>
+ <div id="mensagemMedico" class="mensagem"></div>
+ <div class="painel"><h2>Registar médico</h2><br><form id="formMedico" class="formulario">
+  <div class="campo"><label for="medicoNome">Nome completo</label><input id="medicoNome" required></div>
+  <div class="campo"><label for="medicoEspecialidade">Especialidade</label><input id="medicoEspecialidade" required></div>
+  <div class="campo"><label for="medicoTelefone">Telefone</label><input id="medicoTelefone" required></div>
+  <div class="campo"><label for="medicoEmail">Email</label><input type="email" id="medicoEmail" required></div>
+  <div class="campo completo"><label for="medicoSenha">Senha de acesso</label><input type="password" id="medicoSenha" minlength="8" required></div>
+  <div class="campo completo"><button class="btn-principal" type="submit">Registar médico</button></div>
+ </form></div>
+ <div class="painel"><h2>Médicos registados</h2><br><div class="tabela-container" id="tabelaMedicos"></div></div>
+</section>
+
+<section id="consultas" class="secao privada">
+ <div class="cabecalho-pagina"><div><h2>Gestão de consultas</h2><p>Consultar e acompanhar os atendimentos.</p></div><button class="btn-secundario" onclick="carregarConsultas()">Actualizar</button></div>
+ <div id="mensagemConsulta" class="mensagem"></div>
+ <div class="painel" id="painelMarcarConsulta"><h2>Marcar consulta</h2><br><form id="formConsulta" class="formulario">
+  <div class="campo"><label for="consultaPaciente">Paciente</label><select id="consultaPaciente" required><option value="">Seleccione o paciente</option></select></div>
+  <div class="campo"><label for="consultaMedico">Médico</label><select id="consultaMedico" required><option value="">Seleccione o médico</option></select></div>
+  <div class="campo"><label for="consultaDataHora">Data e hora</label><input type="datetime-local" id="consultaDataHora" required></div>
+  <div class="campo"><label for="consultaMotivo">Motivo</label><input id="consultaMotivo" required></div>
+  <div class="campo completo"><button class="btn-principal" type="submit">Agendar consulta</button></div>
+ </form><p class="subtitulo-painel">Atendimento: 06h00 às 20h00. Duração: 30 minutos.</p></div>
+ <div class="painel"><h2>Consultas registadas</h2><br><div class="tabela-container" id="tabelaConsultas"></div></div>
+</section>
+
+
+<section id="relatorios" class="secao privada">
+
+    <div class="cabecalho-pagina">
+        <div>
+            <h2>Relatórios e estatísticas</h2>
+            <p>Analise a actividade clínica através de filtros personalizados.</p>
+        </div>
+
+        <button class="btn-secundario" onclick="carregarDashboard()">
+            Actualizar indicadores
+        </button>
+    </div>
+
+    <!-- INDICADORES GERAIS -->
+
+    <div class="grelha-cartoes">
+
+        <div class="cartao-estatistica">
+            <span>Total de pacientes</span>
+            <strong id="totalPacientesRelatorio">0</strong>
+        </div>
+
+        <div class="cartao-estatistica">
+            <span>Total de médicos</span>
+            <strong id="totalMedicosRelatorio">0</strong>
+        </div>
+
+        <div class="cartao-estatistica">
+            <span>Total de consultas</span>
+            <strong id="totalConsultasRelatorio">0</strong>
+        </div>
+
+        <div class="cartao-estatistica">
+            <span>Consultas concluídas</span>
+            <strong id="consultasConcluidasRelatorio">0</strong>
+        </div>
+
+    </div>
+
+    <!-- FILTROS DOS RELATÓRIOS -->
+
+    <div class="painel">
+
+        <h2>Filtrar consultas</h2>
+
+        <p class="subtitulo-painel">
+            Seleccione os critérios para gerar um relatório detalhado.
+        </p>
+
+        <br>
+
+        <div id="mensagemRelatorio" class="mensagem"></div>
+
+        <form id="formRelatorio" class="formulario">
+
+            <div class="campo">
+                <label for="relatorioDataInicio">Data inicial</label>
+                <input type="date" id="relatorioDataInicio" required>
+            </div>
+
+            <div class="campo">
+                <label for="relatorioDataFim">Data final</label>
+                <input type="date" id="relatorioDataFim" required>
+            </div>
+
+            <div class="campo">
+                <label for="relatorioHoraInicio">Hora inicial</label>
+                <input type="time" id="relatorioHoraInicio">
+            </div>
+
+            <div class="campo">
+                <label for="relatorioHoraFim">Hora final</label>
+                <input type="time" id="relatorioHoraFim">
+            </div>
+
+            <div class="campo">
+                <label for="relatorioEstado">Estado da consulta</label>
+                <select id="relatorioEstado">
+                    <option value="">Todos os estados</option>
+                    <option value="MARCADA">Marcada</option>
+                    <option value="CONCLUIDA">Concluída</option>
+                    <option value="CANCELADA">Cancelada</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="relatorioMedico">Médico</label>
+                <select id="relatorioMedico">
+                    <option value="">Todos os médicos</option>
+                </select>
+            </div>
+
+            <div class="campo completo">
+                <label for="relatorioEspecialidade">Especialidade</label>
+                <input
+                    type="text"
+                    id="relatorioEspecialidade"
+                    placeholder="Ex.: Cardiologia"
+                >
+            </div>
+
+            <div class="campo completo">
+                <button type="submit" class="btn-principal">
+                    Gerar relatório
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- RESULTADO DO RELATÓRIO -->
+
+    <div class="painel">
+
+        <div class="painel-cabecalho">
+            <div>
+                <h2>Resultado do relatório</h2>
+                <p class="subtitulo-painel">
+                    Consultas encontradas de acordo com os filtros seleccionados.
+                </p>
+            </div>
+        </div>
+
+        <div id="resumoRelatorio" class="nota-informativa">
+            Seleccione os filtros e clique em Gerar relatório.
+        </div>
+
+        <div class="tabela-container" id="tabelaRelatorio">
+            <p class="vazio">Ainda não foi gerado nenhum relatório.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="inicioPaciente" class="secao privada">
+
+    <div class="cabecalho-pagina">
+        <div>
+            <h2>Área do paciente</h2>
+            <p>Consulte as suas marcações e acompanhe o seu atendimento.</p>
+        </div>
+
+        <button class="btn-secundario" onclick="carregarAreaPaciente()">
+            Actualizar
+        </button>
+    </div>
+
+    <!-- INDICADORES -->
+    <div class="grelha-cartoes">
+
+        <div class="cartao-estatistica">
+            <span>Consultas marcadas</span>
+            <strong id="consultasMarcadasPaciente">0</strong>
+        </div>
+
+        <div class="cartao-estatistica">
+            <span>Consultas concluídas</span>
+            <strong id="consultasConcluidasPaciente">0</strong>
+        </div>
+
+    </div>
+
+    <!-- PASSAPORTE DIGITAL -->
+    <div class="painel">
+
+        <h2>Passaporte Digital da Consulta</h2>
+
+        <p>
+            Acompanhe o seu atendimento através do código único
+            da sua consulta.
+        </p>
+
+        <div class="formulario">
+
+            <div class="campo completo">
+                <label for="codigoPassaporte">
+                    Código da consulta
+                </label>
+
+                <input
+                    type="text"
+                    id="codigoPassaporte"
+                    placeholder="Ex.: SAUDEMZ-..."
+                >
+            </div>
+
+            <div class="campo completo">
+                <button
+                    type="button"
+                    class="btn-principal"
+                    onclick="consultarPassaporteDigital()">
+                    Consultar passaporte
+                </button>
+            </div>
+
+        </div>
+
+        <div id="resultadoPassaporte"></div>
+
+    </div>
+
+    <!-- MARCAR CONSULTA -->
+    <div class="painel">
+
+        <h2>Marcar nova consulta</h2>
+
+        <br>
+
+        <div id="mensagemConsultaPaciente" class="mensagem"></div>
+
+        <form id="formConsultaPaciente" class="formulario">
+
+            <div class="campo">
+                <label for="consultaPacienteMedico">Médico</label>
+
+                <select id="consultaPacienteMedico" required>
+                    <option value="">Seleccione o médico</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="consultaPacienteData">Data da consulta</label>
+
+                <input
+                    type="date"
+                    id="consultaPacienteData"
+                    required
+                >
+            </div>
+
+            <div class="campo">
+                <label for="consultaPacienteHora">Horário disponível</label>
+
+                <select id="consultaPacienteHora" required disabled>
+                    <option value="">
+                        Seleccione primeiro o médico e a data
+                    </option>
+                </select>
+            </div>
+
+            <div class="campo completo">
+                <p id="horariosDisponiveisInfo" class="mensagem"></p>
+            </div>
+
+            <div class="campo completo">
+                <label for="consultaPacienteMotivo">Motivo da consulta</label>
+
+                <input
+                    type="text"
+                    id="consultaPacienteMotivo"
+                    placeholder="Indique o motivo da consulta"
+                    required
+                >
+            </div>
+
+            <div class="campo completo">
+                <button class="btn-principal" type="submit">
+                    Solicitar consulta
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="cartao">
+
+        <h3>Histórico de consultas</h3>
+
+        <div class="tabela-responsiva">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Médico</th>
+                        <th>Especialidade</th>
+                        <th>Data e hora</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acções</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabelaConsultasPaciente">
+                    <tr>
+                        <td colspan="6">
+                            A carregar consultas...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+/* PERFIS */
+function normalizarPerfil(perfil){
+ return String(perfil||"").replace("ROLE_","").trim().toUpperCase();
+}
+
+function obterPerfilActual(){
+ return normalizarPerfil(
+  utilizadorActual?.perfil||
+  utilizadorActual?.role||
+  perfilActual
+ );
+}
+
+function eAdministrador(){
+ return ["SUPERUTILIZADOR","ADMIN"].includes(obterPerfilActual());
+}
+
+function eMedico(){
+ return obterPerfilActual()==="MEDICO";
+}
+
+function ePaciente(){
+ return obterPerfilActual()==="PACIENTE";
+}
+
+function nomeUtilizador(){
+ return utilizadorActual?.nome||
+        utilizadorActual?.nomeCompleto||
+        utilizadorActual?.email||
+        "Utilizador";
+}
+
+function idPacienteActual(){
+ return utilizadorActual?.pacienteId??
+        utilizadorActual?.idPaciente??
+        utilizadorActual?.id;
+}
+
+function idMedicoActual(){
+ return utilizadorActual?.medicoId??
+        utilizadorActual?.idMedico??
+        utilizadorActual?.id;
+}
+
+/* TOKEN CSRF */
+async function obterTokenCSRF(){
+
+    const resposta = await fetch(API.csrf, {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { Accept: "application/json" }
+    });
+
+    if (!resposta.ok) {
+        throw new Error("Não foi possível obter o token de segurança.");
+    }
+
+    const dados = await resposta.json();
+
+    const cookie = document.cookie
+        .split("; ")
+        .find(linha => linha.startsWith("XSRF-TOKEN="));
+
+    if (!cookie) {
+        throw new Error("Cookie de segurança não encontrado.");
+    }
+
+    return {
+        headerName: dados.headerName,
+        token: decodeURIComponent(
+            cookie.substring("XSRF-TOKEN=".length)
+        )
+    };
+}
+
+/* REQUISIÇÕES HTTP */
+const API = {
+    csrf: "/csrf",
+    login: "/login",
+    sessao: "/usuarios/me",
+    logout: "/logout",
+    consultas: "/consultas",
+    pacientes: "/pacientes",
+	cadastroPaciente: "/pacientes/cadastro",
+    medicos: "/medicos"
+};
+// VARIÁVEIS GLOBAIS
+let cacheMedicos = [];
+let cachePacientes = [];
+
+async function obterDados(url){
+
+    const resposta = await fetch(url, {
+
+        method: "GET",
+
+        credentials: "same-origin",
+
+        cache: "no-store",
+
+        headers: {
+            Accept: "application/json"
+        }
+
+    });
+
+    if(resposta.status === 401 || resposta.status === 403){
+
+        throw new Error("Não tem autorização para consultar estes dados.");
+
+    }
+
+    if(!resposta.ok){
+
+        throw new Error("Erro ao consultar os dados. Código: " + resposta.status);
+
+    }
+
+    if(resposta.status === 204) return null;
+
+    const tipo = resposta.headers.get("content-type") || "";
+
+    return tipo.includes("application/json")
+        ? await resposta.json()
+        : await resposta.text();
+
+}
+async function carregarHorariosPaciente() {
+
+    const medicoId = document.getElementById("consultaPacienteMedico").value;
+    const data = document.getElementById("consultaPacienteData").value;
+
+    const selectHora = document.getElementById("consultaPacienteHora");
+    const informacao = document.getElementById("horariosDisponiveisInfo");
+
+    selectHora.innerHTML = '<option value="">A carregar horários...</option>';
+    selectHora.disabled = true;
+    informacao.textContent = "";
+
+    if (!medicoId || !data) {
+        selectHora.innerHTML = '<option value="">Seleccione médico e data</option>';
+        return;
+    }
+
+    try {
+
+        const disponibilidades = listaDe(
+            await obterDados("/disponibilidades/medico/" + medicoId)
+        );
+
+        const diaSemana = new Date(data + "T12:00:00")
+            .getDay();
+
+        const dias = [
+            "SUNDAY",
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY"
+        ];
+
+        const diaSeleccionado = dias[diaSemana];
+
+        const horariosDia = disponibilidades.filter(d =>
+            d.diaSemana === diaSeleccionado &&
+            d.disponivel === true
+        );
+
+        const horarios = [];
+
+        horariosDia.forEach(d => {
+
+            let inicio = d.horaInicio.substring(0, 5);
+            const fim = d.horaFim.substring(0, 5);
+
+            let actual = inicio;
+
+            while (actual < fim) {
+
+                const [horas, minutos] = actual.split(":").map(Number);
+
+                const proximo = new Date(2000, 0, 1, horas, minutos + 30);
+
+                const proximaHora =
+                    String(proximo.getHours()).padStart(2, "0") +
+                    ":" +
+                    String(proximo.getMinutes()).padStart(2, "0");
+
+                if (proximaHora > fim) break;
+
+                horarios.push(actual);
+
+                actual = proximaHora;
+            }
+
+        });
+
+        const horariosUnicos = [...new Set(horarios)].sort();
+
+        if (!horariosUnicos.length) {
+
+            selectHora.innerHTML =
+                '<option value="">Sem horários disponíveis</option>';
+
+            informacao.textContent =
+                "O médico não tem disponibilidade nesta data.";
+
+            return;
+        }
+
+        selectHora.innerHTML =
+            '<option value="">Seleccione o horário</option>' +
+            horariosUnicos.map(h =>
+                `<option value="${h}">${h}</option>`
+            ).join("");
+
+        selectHora.disabled = false;
+
+        informacao.textContent =
+            "Foram encontrados " + horariosUnicos.length +
+            " horários disponíveis.";
+
+    } catch (erro) {
+
+        selectHora.innerHTML =
+            '<option value="">Não foi possível carregar</option>';
+
+        informacao.textContent = erro.message;
+
+    }
+
+}
+
+
+async function enviarDados(url,metodo,dados=null){
+
+ const csrf=await obterTokenCSRF();
+
+ const configuracao={
+  method:metodo,
+  credentials:"same-origin",
+  headers:{
+   Accept:"application/json",
+   [csrf.headerName]:csrf.token
+  }
+ };
+
+ if(dados!==null){
+  configuracao.headers["Content-Type"]="application/json";
+  configuracao.body=JSON.stringify(dados);
+ }
+
+ const resposta=await fetch(url,configuracao);
+
+ if(resposta.status===204)return null;
+
+ const tipo=resposta.headers.get("content-type")||"";
+ const texto=await resposta.text();
+
+ let resultado=texto;
+
+ if(texto&&tipo.includes("application/json")){
+  try{
+   resultado=JSON.parse(texto);
+  }catch{
+   resultado=texto;
+  }
+ }
+
+ if(!resposta.ok){
+
+  const mensagem=typeof resultado==="string"
+   ?resultado
+   :resultado.detail||
+    resultado.message||
+    resultado.error||
+    resultado.title;
+
+  throw new Error(
+   mensagem||"Erro na operação. Código HTTP: "+resposta.status
+  );
+
+ }
+
+ return resultado;
+
+}
+/* MENSAGENS E UTILITÁRIOS */
+function mostrarMensagem(elementoId,mensagem,tipo="sucesso"){
+ const elemento=document.getElementById(elementoId);
+ if(!elemento)return;
+
+ elemento.textContent=mensagem;
+ elemento.className="mensagem "+tipo;
+ elemento.style.display="block";
+}
+
+function limparMensagem(elementoId){
+ const elemento=document.getElementById(elementoId);
+ if(!elemento)return;
+
+ elemento.textContent="";
+ elemento.className="mensagem";
+ elemento.style.display="none";
+}
+
+function escaparHTML(valor){
+ return String(valor??"").replace(/[&<>"']/g,caracter=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#039;"
+ })[caracter]);
+}
+
+function formatarData(data){
+ if(!data)return"-";
+
+ const valor=new Date(data);
+
+ if(Number.isNaN(valor.getTime()))return data;
+
+ return valor.toLocaleDateString("pt-PT");
+}
+
+function formatarDataHora(data){
+ if(!data)return"-";
+
+ const valor=new Date(data);
+
+ if(Number.isNaN(valor.getTime()))return data;
+
+ return valor.toLocaleString("pt-PT");
+}
+
+function estadoHTML(estado){
+ const valor=String(estado||"").toUpperCase();
+
+ switch(valor){
+  case "MARCADA":
+   return '<span class="estado estado-marcada">Marcada</span>';
+
+  case "CONCLUIDA":
+   return '<span class="estado estado-concluida">Concluída</span>';
+
+  case "CANCELADA":
+   return '<span class="estado estado-cancelada">Cancelada</span>';
+
+  default:
+   return escaparHTML(estado||"-");
+ }
+}
+
+function listaDe(dados){
+ if(Array.isArray(dados))return dados;
+ if(Array.isArray(dados?.content))return dados.content;
+ if(Array.isArray(dados?.data))return dados.data;
+ return [];
+}
+
+/* NAVEGAÇÃO */
+function mostrarSecao(secaoId){
+ document.querySelectorAll(".secao").forEach(secao=>{
+  secao.classList.toggle("active",secao.id===secaoId);
+ });
+
+ document.querySelectorAll("[data-publico],[data-secao]").forEach(botao=>{
+  botao.classList.toggle(
+   "active",
+   (botao.dataset.publico||botao.dataset.secao)===secaoId
+  );
+ });
+
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function mostrarPublico(secaoId){
+ if(utilizadorActual){
+  if(secaoId==="medicosPublicos"){
+   mostrarPrivado(eMedico()?"inicioMedico":ePaciente()?"inicioPaciente":"inicioAdmin");
+   return;
+  }
+ }
+
+ mostrarSecao(secaoId);
+}
+
+
+
+
+
+function mostrarPrivado(secaoId) {
+
+    if (!utilizadorActual) {
+        mostrarSecao("login");
+        return;
+    }
+
+    mostrarSecao(secaoId);
+
+    if (secaoId !== "inicioAdmin" && temporizadorAgenda !== null) {
+        clearInterval(temporizadorAgenda);
+        temporizadorAgenda = null;
+    }
+
+    if (secaoId === "pacientes") {
+        carregarPacientes();
+    }
+
+    if (secaoId === "medicos") {
+        carregarMedicos();
+    }
+
+    if (secaoId === "consultas") {
+
+        if (eAdministrador()) {
+            Promise.all([
+                carregarPacientes(),
+                carregarMedicos()
+            ]).then(carregarConsultas);
+        } else {
+            carregarConsultas();
+        }
+
+    }
+
+    if (secaoId === "relatorios") {
+        carregarDashboard();
+    }
+
+    if (secaoId === "inicioMedico") {
+        carregarAreaMedico();
+    }
+
+    if (secaoId === "inicioPaciente") {
+
+        Promise.all([
+            carregarMedicos(),
+            carregarAreaPaciente()
+        ]);
+
+    }
+
+}
+
+function configurarMenuPrivado(){
+ const nav=document.getElementById("navegacaoPrivada");
+ nav.innerHTML="";
+
+ let itens=[];
+
+ if(eAdministrador()){
+  itens=[
+   ["inicioAdmin","Painel"],
+   ["pacientes","Pacientes"],
+   ["medicos","Médicos"],
+   ["consultas","Consultas"],
+   ["relatorios","Relatórios"]
+  ];
+ }else if(eMedico()){
+  itens=[["inicioMedico","As minhas consultas"]];
+ }else if(ePaciente()){
+  itens=[["inicioPaciente","A minha área"]];
+ }
+
+ itens.forEach(([id,label])=>{
+  const botao=document.createElement("button");
+  botao.type="button";
+  botao.textContent=label;
+  botao.dataset.secao=id;
+  botao.addEventListener("click",()=>mostrarPrivado(id));
+  nav.appendChild(botao);
+ });
+
+ document.getElementById("navegacaoPublica").hidden=true;
+ nav.hidden=false;
+}
+
+/* SESSÃO */
+function limparSessaoVisual(){
+ utilizadorActual=null;
+ perfilActual=null;
+
+ document.getElementById("areaUtilizador").hidden=true;
+ document.getElementById("navegacaoPrivada").hidden=true;
+ document.getElementById("navegacaoPublica").hidden=false;
+}
+
+function actualizarInterfacePorPerfil(){
+ const perfil=obterPerfilActual();
+
+ document.getElementById("areaUtilizador").hidden=false;
+ document.getElementById("emailUtilizador").textContent=
+  utilizadorActual?.email||nomeUtilizador();
+ document.getElementById("perfilUtilizador").textContent=perfil;
+
+ configurarMenuPrivado();
+
+ if(eAdministrador()){
+  mostrarSecao("inicioAdmin");
+  carregarDashboard();
+ }else if(eMedico()){
+  mostrarSecao("inicioMedico");
+  carregarAreaMedico();
+ }else if(ePaciente()){
+  mostrarSecao("inicioPaciente");
+  carregarAreaPaciente();
+ }else{
+  limparSessaoVisual();
+  mostrarSecao("inicioPublico");
+ }
+}
+
+async function verificarSessao(){
+ try{
+  const resposta=await fetch(API.sessao,{
+   method:"GET",
+   credentials:"same-origin",
+   cache:"no-store",
+   headers:{Accept:"application/json"}
+  });
+
+  if(!resposta.ok){
+   limparSessaoVisual();
+   return false;
+  }
+
+  utilizadorActual=await resposta.json();
+
+  perfilActual=normalizarPerfil(
+   utilizadorActual.perfil||utilizadorActual.role
+  );
+
+  actualizarInterfacePorPerfil();
+  return true;
+
+ }catch(erro){
+  console.error("Erro ao verificar sessão:",erro);
+  limparSessaoVisual();
+  return false;
+ }
+}
+
+/* LOGIN */
+/* LOGIN */
+async function iniciarSessao(evento){
+ evento.preventDefault();
+ limparMensagem("mensagemLogin");
+
+ const email=document.getElementById("loginEmail").value.trim();
+ const senha=document.getElementById("loginSenha").value;
+
+ const formulario=document.getElementById("formLogin");
+ const botao=formulario.querySelector('button[type="submit"]');
+
+ botao.disabled=true;
+ botao.textContent="A autenticar...";
+
+ try{
+  const csrf=await obterTokenCSRF();
+
+  const dados=new URLSearchParams();
+  dados.append("username",email);
+  dados.append("password",senha);
+
+  const resposta=await fetch(API.login,{
+   method:"POST",
+   credentials:"same-origin",
+   redirect:"follow",
+   headers:{
+    "Content-Type":"application/x-www-form-urlencoded",
+    [csrf.headerName]:csrf.token
+   },
+   body:dados.toString()
+  });
+
+  if(resposta.status===403){
+   throw new Error(
+    "Acesso recusado (403). Não foi possível validar o pedido de autenticação. Verifique a protecção CSRF."
+   );
+  }
+
+  if(resposta.status===401){
+   throw new Error("Email ou senha incorrectos.");
+  }
+
+  if(!resposta.ok){
+   throw new Error(
+    "Erro do servidor durante a autenticação. Código HTTP: "+resposta.status
+   );
+  }
+
+  const autenticado=await verificarSessao();
+
+  if(!autenticado){
+   throw new Error(
+    "Não foi possível iniciar sessão. Confirme o email e a senha."
+   );
+  }
+
+  limparMensagem("mensagemLogin");
+  formulario.reset();
+
+ }catch(erro){
+  console.error("Erro durante o login:",erro);
+
+  mostrarMensagem(
+   "mensagemLogin",
+   erro.message||"Ocorreu um erro inesperado durante a autenticação.",
+   "erro"
+  );
+
+ }finally{
+  botao.disabled=false;
+  botao.textContent="Entrar";
+ }
+}
+  
+/* LOGOUT */
+async function terminarSessao(){
+ try{
+  const csrf=await obterTokenCSRF();
+
+  const resposta=await fetch(API.logout,{
+   method:"POST",
+   credentials:"same-origin",
+   headers:{
+    [csrf.headerName]:csrf.token
+   }
+  });
+
+  if(!resposta.ok){
+   throw new Error("Não foi possível terminar a sessão. Código: "+resposta.status);
+  }
+
+  limparSessaoVisual();
+  mostrarSecao("inicioPublico");
+  document.getElementById("formLogin").reset();
+
+ }catch(erro){
+  alert(erro.message);
+ }
+}
+
+/* CADASTRO E PACIENTES */
+function dadosPaciente(prefixo){
+ return{
+  nome:document.getElementById(prefixo+"Nome").value.trim(),
+  telefone:document.getElementById(prefixo+"Telefone").value.trim(),
+  dataNascimento:document.getElementById(prefixo+"Nascimento").value,
+  email:document.getElementById(prefixo+"Email").value.trim(),
+  sexo:document.getElementById(prefixo+"Sexo").value,
+  endereco:document.getElementById(prefixo+"Endereco").value.trim()
+ };
+}
+
+async function submeterCadastro(evento){
+ evento.preventDefault();
+ limparMensagem("mensagemCadastro");
+
+ const dados=dadosPaciente("cad");
+ dados.senha=document.getElementById("cadSenha").value;
+
+ try{
+  await enviarDados(API.cadastroPaciente,"POST",dados);
+
+  mostrarMensagem(
+   "mensagemCadastro",
+   "Conta criada com sucesso. Já pode iniciar sessão."
+  );
+
+  document.getElementById("formCadastro").reset();
+
+ }catch(erro){
+  mostrarMensagem("mensagemCadastro",erro.message,"erro");
+ }
+}
+
+async function carregarMedicosPublicos(){
+ const area=document.getElementById("listaMedicosPublicos");
+
+ area.innerHTML='<p class="vazio">A carregar médicos...</p>';
+ limparMensagem("mensagemMedicosPublicos");
+
+ try{
+  const dados=listaDe(await obterDados(API.medicos));
+  cacheMedicos=dados;
+  popularSelects();
+
+  if(!dados.length){
+   area.innerHTML='<p class="vazio">Ainda não existem médicos registados.</p>';
+   return;
+  }
+
+  area.innerHTML=dados.map(m=>`
+   <article class="cartao-medico">
+    <h3>${escaparHTML(m.nome)}</h3>
+    <p><strong>Especialidade:</strong> ${escaparHTML(m.especialidade||"-")}</p>
+    <p><strong>Telefone:</strong> ${escaparHTML(m.telefone||"-")}</p>
+   </article>
+  `).join("");
+
+ }catch(erro){
+  area.innerHTML="";
+  mostrarMensagem("mensagemMedicosPublicos",erro.message,"erro");
+ }
+}
+
+async function carregarPacientes(){
+ const area=document.getElementById("tabelaPacientes");
+ area.innerHTML='<p class="vazio">A carregar...</p>';
+
+ try{
+  cachePacientes=listaDe(await obterDados(API.pacientes));
+
+  if(!cachePacientes.length){
+   area.innerHTML='<p class="vazio">Nenhum paciente registado.</p>';
+   return;
+  }
+
+  area.innerHTML=`
+   <table>
+    <thead>
+     <tr><th>Nome</th><th>Telefone</th><th>Email</th><th>Data de nascimento</th><th>Sexo</th></tr>
+    </thead>
+    <tbody>
+     ${cachePacientes.map(p=>`
+      <tr>
+       <td>${escaparHTML(p.nome)}</td>
+       <td>${escaparHTML(p.telefone)}</td>
+       <td>${escaparHTML(p.email||"-")}</td>
+       <td>${formatarData(p.dataNascimento)}</td>
+       <td>${escaparHTML(p.sexo||"-")}</td>
+      </tr>
+     `).join("")}
+    </tbody>
+   </table>
+  `;
+
+  popularSelects();
+
+ }catch(erro){
+  area.textContent=erro.message;
+ }
+}
+
+async function carregarMedicos(){
+ const area=document.getElementById("tabelaMedicos");
+ area.innerHTML='<p class="vazio">A carregar...</p>';
+
+ try{
+  cacheMedicos=listaDe(await obterDados(API.medicos));
+
+  if(!cacheMedicos.length){
+   area.innerHTML='<p class="vazio">Nenhum médico registado.</p>';
+   return;
+  }
+
+  area.innerHTML=`
+   <table>
+    <thead><tr><th>Nome</th><th>Especialidade</th><th>Telefone</th><th>Email</th></tr></thead>
+    <tbody>
+     ${cacheMedicos.map(m=>`
+      <tr>
+       <td>${escaparHTML(m.nome)}</td>
+       <td>${escaparHTML(m.especialidade)}</td>
+       <td>${escaparHTML(m.telefone)}</td>
+       <td>${escaparHTML(m.email)}</td>
+      </tr>
+     `).join("")}
+    </tbody>
+   </table>
+  `;
+
+  popularSelects();
+
+ }catch(erro){
+  area.textContent=erro.message;
+ }
+}
+
+function popularSelects(){
+
+ const opcoesMedicos=cacheMedicos.map(m=>`
+
+  <option value="${escaparHTML(m.id)}">
+
+   ${escaparHTML(m.nome)} — ${escaparHTML(m.especialidade||"")}
+
+  </option>
+
+ `).join("");
+
+ ["consultaMedico","consultaPacienteMedico","disponibilidadeMedico"].forEach(id=>{
+
+  const elemento=document.getElementById(id);
+
+  if(elemento){
+
+   elemento.innerHTML='<option value="">Seleccione o médico</option>'+opcoesMedicos;
+
+  }
+
+ });
+
+ const opcoesPacientes=cachePacientes.map(p=>`
+
+  <option value="${escaparHTML(p.id)}">${escaparHTML(p.nome)}</option>
+
+ `).join("");
+
+ const elementoPaciente=document.getElementById("consultaPaciente");
+
+ if(elementoPaciente){
+
+  elementoPaciente.innerHTML='<option value="">Seleccione o paciente</option>'+opcoesPacientes;
+
+ }
+
+}
+async function registarDisponibilidade(evento){
+
+ evento.preventDefault();
+
+ const medicoId=document.getElementById("disponibilidadeMedico").value;
+ const diaSemana=document.getElementById("disponibilidadeDia").value;
+ const horaInicio=document.getElementById("disponibilidadeHoraInicio").value;
+ const horaFim=document.getElementById("disponibilidadeHoraFim").value;
+
+ const mensagem=document.getElementById("mensagemDisponibilidade");
+
+ mensagem.textContent="";
+
+ if(!medicoId){
+  mensagem.textContent="Seleccione um médico.";
+  return;
+ }
+
+ if(horaInicio>=horaFim){
+  mensagem.textContent="A hora de fim deve ser posterior à hora de início.";
+  return;
+ }
+
+ try{
+
+  await enviarDados(
+   "/disponibilidades/medico/"+medicoId,
+   "POST",
+   {
+    diaSemana:diaSemana,
+    horaInicio:horaInicio,
+    horaFim:horaFim
+   }
+  );
+
+  mensagem.textContent="Horário registado com sucesso.";
+
+  document.getElementById("disponibilidadeDia").value="";
+  document.getElementById("disponibilidadeHoraInicio").value="";
+  document.getElementById("disponibilidadeHoraFim").value="";
+
+  await carregarDisponibilidades();
+
+ }catch(erro){
+
+  mensagem.textContent=erro.message;
+
+ }
+
+}
+
+async function carregarDisponibilidades(){
+
+ const medicoId=document.getElementById("disponibilidadeMedico").value;
+ const area=document.getElementById("tabelaDisponibilidades");
+
+ if(!medicoId){
+  area.innerHTML='<p class="vazio">Seleccione um médico para consultar os seus horários.</p>';
+  return;
+ }
+
+ area.innerHTML='<p class="vazio">A carregar horários...</p>';
+
+ const dias={
+  MONDAY:"Segunda-feira",
+  TUESDAY:"Terça-feira",
+  WEDNESDAY:"Quarta-feira",
+  THURSDAY:"Quinta-feira",
+  FRIDAY:"Sexta-feira",
+  SATURDAY:"Sábado",
+  SUNDAY:"Domingo"
+ };
+
+ try{
+
+  const dados=listaDe(
+   await obterDados("/disponibilidades/medico/"+medicoId)
+  );
+
+  if(!dados.length){
+   area.innerHTML='<p class="vazio">Este médico ainda não tem horários registados.</p>';
+   return;
+  }
+
+  const activos=dados.filter(d=>d.disponivel===true);
+
+  if(!activos.length){
+   area.innerHTML='<p class="vazio">Não existem horários activos para este médico.</p>';
+   return;
+  }
+
+  area.innerHTML=`
+   <table>
+    <thead>
+     <tr>
+      <th>Dia</th>
+      <th>Início</th>
+      <th>Fim</th>
+      <th>Estado</th>
+     </tr>
+    </thead>
+    <tbody>
+     ${activos.map(d=>`
+      <tr>
+       <td>${dias[d.diaSemana]||d.diaSemana}</td>
+       <td>${d.horaInicio.substring(0,5)}</td>
+       <td>${d.horaFim.substring(0,5)}</td>
+       <td>Activo</td>
+      </tr>
+     `).join("")}
+    </tbody>
+   </table>
+  `;
+
+ }catch(erro){
+
+  area.innerHTML='<p class="vazio">'+escaparHTML(erro.message)+'</p>';
+
+ }
+
+}
+
+/* CONSULTAS */
+async function carregarConsultas(){
+ const area=document.getElementById("tabelaConsultas");
+ area.innerHTML='<p class="vazio">A carregar...</p>';
+
+ try{
+  cacheConsultas=listaDe(await obterDados(API.consultas));
+  renderTabelaConsultasAdmin();
+  popularSelects();
+
+ }catch(erro){
+  area.textContent=erro.message;
+ }
+}
+
+function nomePaciente(consulta){
+ return consulta.paciente?.nome||
+        consulta.nomePaciente||
+        "—";
+}
+
+function nomeMedico(consulta){
+ return consulta.medico?.nome||
+        consulta.nomeMedico||
+        "—";
+}
+
+function renderTabelaConsultasAdmin(){
+ const area=document.getElementById("tabelaConsultas");
+
+ if(!cacheConsultas.length){
+  area.innerHTML='<p class="vazio">Nenhuma consulta registada.</p>';
+  return;
+ }
+
+ area.innerHTML=`
+  <table>
+   <thead>
+    <tr>
+     <th>Paciente</th><th>Médico</th><th>Data e hora</th>
+     <th>Motivo</th><th>Estado</th><th>Acções</th>
+    </tr>
+   </thead>
+   <tbody>
+    ${cacheConsultas.map(c=>`
+     <tr>
+      <td>${escaparHTML(nomePaciente(c))}</td>
+      <td>${escaparHTML(nomeMedico(c))}</td>
+      <td>${formatarDataHora(c.dataHora)}</td>
+      <td>${escaparHTML(c.motivo||"-")}</td>
+      <td>${estadoHTML(c.estado)}</td>
+      <td>
+       ${c.estado==="MARCADA"?`
+        <button class="btn-pequeno btn-secundario"
+         onclick="alterarEstadoConsulta(${Number(c.id)},'CONCLUIDA')">Concluir</button>
+        <button class="btn-pequeno btn-perigo"
+         onclick="alterarEstadoConsulta(${Number(c.id)},'CANCELADA')">Cancelar</button>
+       `:"—"}
+      </td>
+     </tr>
+    `).join("")}
+   </tbody>
+  </table>
+ `;
+}
+
+async function carregarAreaPaciente() {
+
+    const tabela = document.getElementById("tabelaConsultasPaciente");
+
+    tabela.innerHTML = `
+        <tr>
+            <td colspan="6">A carregar consultas...</td>
+        </tr>
+    `;
+
+    try {
+
+        const consultas = listaDe(
+            await obterDados("/consultas/minhas")
+        );
+
+        const marcadas = consultas.filter(
+            c => c.estado === "MARCADA"
+        );
+
+        const concluidas = consultas.filter(
+            c => c.estado === "CONCLUIDA"
+        );
+
+        document.getElementById("consultasMarcadasPaciente")
+            .textContent = marcadas.length;
+
+        document.getElementById("consultasConcluidasPaciente")
+            .textContent = concluidas.length;
+
+        renderTabelaConsultasPaciente(consultas);
+
+    } catch (erro) {
+
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="6">${escaparHTML(erro.message)}</td>
+            </tr>
+        `;
+
+    }
+}
+
+
+function renderTabelaConsultasPaciente(consultas) {
+
+    const tabela = document.getElementById("tabelaConsultasPaciente");
+
+    if (!consultas.length) {
+
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="6">Ainda não tem consultas registadas.</td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    tabela.innerHTML = consultas.map(c => `
+
+        <tr>
+
+            <td>${escaparHTML(nomeMedico(c))}</td>
+
+            <td>${escaparHTML(c.medico?.especialidade || "—")}</td>
+
+            <td>${formatarDataHora(c.dataHora)}</td>
+
+            <td>${escaparHTML(c.motivo || "—")}</td>
+
+            <td>${estadoHTML(c.estado)}</td>
+
+            <td>
+                ${c.estado === "MARCADA" ? `
+                    <button
+                        class="btn-pequeno btn-perigo"
+                        onclick="alterarEstadoConsulta(${Number(c.id)}, 'CANCELADA')">
+                        Cancelar
+                    </button>
+                ` : "—"}
+            </td>
+
+        </tr>
+
+    `).join("");
+
+}
+
+async function alterarEstadoConsulta(id,estado){
+ if(!confirm(`Pretende alterar o estado da consulta para ${estado}?`)){
+  return;
+ }
+
+ try{
+  await enviarDados(
+   `${API.consultas}/${id}/estado`,
+   "PATCH",
+   {estado:estado}
+  );
+
+  mostrarMensagem("mensagemConsulta","Estado da consulta actualizado.");
+
+  await carregarConsultas();
+
+  if(eAdministrador())await carregarDashboard();
+  if(eMedico())await carregarAreaMedico();
+  if(ePaciente())await carregarAreaPaciente();
+
+ }catch(erro){
+  mostrarMensagem("mensagemConsulta",erro.message,"erro");
+ }
+}
+
+function validarHorario(valor){
+ const data=new Date(valor);
+
+ if(Number.isNaN(data.getTime())){
+  throw new Error("Indique uma data e hora válidas.");
+ }
+
+ if(data<=new Date()){
+  throw new Error("A data da consulta deve ser futura.");
+ }
+
+ const minutos=data.getHours()*60+data.getMinutes();
+
+ if(minutos<360||minutos>1170||data.getMinutes()%30!==0){
+  throw new Error("Escolha um horário entre 06h00 e 19h30, em intervalos de 30 minutos.");
+ }
+
+ return valor;
+}
+
+async function criarConsulta(dados,elementoMensagem){
+ try{
+  dados.dataHora=validarHorario(dados.dataHora);
+
+  await enviarDados(API.consultas,"POST",dados);
+
+  mostrarMensagem(elementoMensagem,"Consulta registada com sucesso.");
+
+  return true;
+
+ }catch(erro){
+  mostrarMensagem(elementoMensagem,erro.message,"erro");
+  return false;
+ }
+}
+
+async function submeterConsultaAdmin(evento){
+ evento.preventDefault();
+ limparMensagem("mensagemConsulta");
+
+ const dados={
+  paciente:{
+   id:Number(document.getElementById("consultaPaciente").value)
+  },
+  medico:{
+   id:Number(document.getElementById("consultaMedico").value)
+  },
+  dataHora:document.getElementById("consultaDataHora").value,
+  motivo:document.getElementById("consultaMotivo").value.trim()
+ };
+
+ const sucesso=await criarConsulta(dados,"mensagemConsulta");
+
+ if(sucesso){
+  document.getElementById("formConsulta").reset();
+  await carregarConsultas();
+  await carregarDashboard();
+ }
+}
+
+async function submeterPacienteAdmin(evento){
+ evento.preventDefault();
+ limparMensagem("mensagemPaciente");
+
+ const dados=dadosPaciente("paciente");
+ dados.senha=document.getElementById("pacienteSenha").value;
+
+ try{
+  await enviarDados(API.pacientes,"POST",dados);
+
+  mostrarMensagem("mensagemPaciente","Paciente registado com sucesso.");
+
+  document.getElementById("formPaciente").reset();
+
+  await carregarPacientes();
+  await carregarDashboard();
+
+ }catch(erro){
+  mostrarMensagem("mensagemPaciente",erro.message,"erro");
+ }
+}
+
+async function submeterMedico(evento){
+ evento.preventDefault();
+ limparMensagem("mensagemMedico");
+
+ const dados={
+  nome:document.getElementById("medicoNome").value.trim(),
+  especialidade:document.getElementById("medicoEspecialidade").value.trim(),
+  telefone:document.getElementById("medicoTelefone").value.trim(),
+  email:document.getElementById("medicoEmail").value.trim(),
+  senha:document.getElementById("medicoSenha").value
+ };
+
+ try{
+  await enviarDados(API.medicos,"POST",dados);
+
+  mostrarMensagem("mensagemMedico","Médico registado com sucesso.");
+
+  document.getElementById("formMedico").reset();
+
+  await carregarMedicos();
+  await carregarDashboard();
+
+ }catch(erro){
+  mostrarMensagem("mensagemMedico",erro.message,"erro");
+ }
+}
+
+/* ÁREA DO MÉDICO */
+function consultasDoMedico(){
+ const id=Number(idMedicoActual());
+
+ return cacheConsultas.filter(c=>
+  Number(c.medico?.id??c.medicoId)===id
+ );
+}
+
+
+
+
+
+async function carregarAreaMedico(){
+
+    try{
+
+        const dados = await obterDados("/medico/dashboard");
+
+        // INDICADORES
+
+        document.getElementById("totalConsultasMedico").textContent =
+            dados.totalConsultas ?? 0;
+
+        document.getElementById("consultasHojeMedico").textContent =
+            dados.consultasHoje ?? 0;
+
+        document.getElementById("consultasMarcadasMedico").textContent =
+            dados.totalMarcadas ?? 0;
+
+        document.getElementById("consultasConcluidasMedico").textContent =
+            dados.totalConcluidas ?? 0;
+
+        document.getElementById("consultasCanceladasMedico").textContent =
+            dados.totalCanceladas ?? 0;
+
+
+        // DATA DO PAINEL
+
+        const dataPainel = document.getElementById("dataPainelMedico");
+
+        if(dataPainel){
+
+            dataPainel.textContent = new Date().toLocaleDateString("pt-PT", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
+        }
+		
+		        // FUNÇÃO PARA CONSTRUIR AS TABELAS
+
+		        function construirTabela(consultas, mensagem, incluirAccao = false){
+
+		            if(!consultas || consultas.length === 0){
+		                return `<p class="vazio">${mensagem}</p>`;
+		            }
+
+		            return `
+		                <div class="tabela-responsiva">
+		                    <table>
+		                        <thead>
+		                            <tr>
+		                                <th>Paciente</th>
+		                                <th>Data e hora</th>
+		                                <th>Motivo</th>
+		                                <th>Estado</th>
+		                                ${incluirAccao ? '<th>Acção</th>' : ""}
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                            ${consultas.map(c => `
+		                                <tr>
+		                                    <td>${escaparHTML(nomePaciente(c))}</td>
+		                                    <td>${formatarDataHora(c.dataHora)}</td>
+		                                    <td>${escaparHTML(c.motivo || "-")}</td>
+		                                    <td>${estadoHTML(c.estado)}</td>
+		                                    ${incluirAccao ? `
+		                                        <td>
+		                                            ${c.estado === "MARCADA" ? `
+		                                                <button
+		                                                    class="btn-pequeno btn-principal"
+		                                                    onclick="alterarEstadoConsulta(${Number(c.id)},'CONCLUIDA')">
+		                                                    Concluir
+		                                                </button>
+		                                            ` : "—"}
+		                                        </td>
+		                                    ` : ""}
+		                                </tr>
+		                            `).join("")}
+		                        </tbody>
+		                    </table>
+		                </div>
+		            `;
+		        }
+
+		        // CONSULTAS DE HOJE
+
+		        const tabelaHoje = document.getElementById("tabelaConsultasHojeMedico");
+
+		        if(tabelaHoje){
+		            tabelaHoje.innerHTML = construirTabela(
+		                dados.listaConsultasHoje,
+		                "Não existem consultas para hoje.",
+		                true
+		            );
+		        }
+
+		        // PRÓXIMAS CONSULTAS
+
+		        const tabelaProximas = document.getElementById("tabelaProximasConsultasMedico");
+
+		        if(tabelaProximas){
+		            tabelaProximas.innerHTML = construirTabela(
+		                dados.proximasConsultas,
+		                "Não existem próximas consultas."
+		            );
+		        }
+
+		        // HISTÓRICO E FILTRO POR ESTADO
+
+		        const historico = dados.historicoConsultas || [];
+
+		        const filtroHistorico = document.getElementById("filtroHistoricoMedico");
+
+		        const tabelaHistorico = document.getElementById("tabelaHistoricoConsultasMedico");
+
+		        function renderizarHistorico(){
+
+		            if(!tabelaHistorico) return;
+
+		            const estadoSelecionado = filtroHistorico
+		                ? filtroHistorico.value
+		                : "TODOS";
+
+		            const consultasFiltradas = estadoSelecionado === "TODOS"
+		                ? historico
+		                : historico.filter(c => c.estado === estadoSelecionado);
+
+		            tabelaHistorico.innerHTML = construirTabela(
+		                consultasFiltradas,
+		                "Não existem consultas com este estado."
+		            );
+		        }
+
+		        if(filtroHistorico){
+		            filtroHistorico.onchange = renderizarHistorico;
+		        }
+
+		        renderizarHistorico();
+
+		    }catch(erro){
+
+		        console.error("Erro ao carregar dashboard médico:", erro);
+
+		        const mensagem = escaparHTML(
+		            erro.message || "Não foi possível carregar o dashboard."
+		        );
+
+		        const tabelas = [
+		            "tabelaConsultasHojeMedico",
+		            "tabelaProximasConsultasMedico",
+		            "tabelaHistoricoConsultasMedico"
+		        ];
+
+		        tabelas.forEach(id => {
+
+		            const tabela = document.getElementById(id);
+
+		            if(tabela){
+		                tabela.innerHTML = `<p class="vazio">${mensagem}</p>`;
+		            }
+
+		        });
+
+		    }
+
+		}
+
+
+        
+/* ÁREA DO PACIENTE */
+function consultasDoPaciente(){
+ const id=Number(idPacienteActual());
+
+ return cacheConsultas.filter(c=>
+  Number(c.paciente?.id??c.pacienteId)===id
+ );
+}
+
+
+async function carregarHorariosPaciente() {
+
+    const medicoId = document.getElementById("consultaPacienteMedico").value;
+    const data = document.getElementById("consultaPacienteData").value;
+
+    const selectHora = document.getElementById("consultaPacienteHora");
+    const informacao = document.getElementById("horariosDisponiveisInfo");
+
+    selectHora.disabled = true;
+    selectHora.innerHTML = '<option value="">A carregar horários...</option>';
+    informacao.textContent = "";
+
+    if (!medicoId || !data) {
+        selectHora.innerHTML =
+            '<option value="">Seleccione primeiro o médico e a data</option>';
+        return;
+    }
+
+    try {
+
+        const [disponibilidades, consultas] = await Promise.all([
+
+            obterDados("/disponibilidades/medico/" + medicoId),
+
+            obterDados("/consultas")
+
+        ]);
+
+        const diaSemana = new Date(data + "T12:00:00").getDay();
+
+        const dias = [
+            "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
+            "THURSDAY", "FRIDAY", "SATURDAY"
+        ];
+
+        const diaSeleccionado = dias[diaSemana];
+
+        const horariosDia = listaDe(disponibilidades).filter(d =>
+            d.diaSemana === diaSeleccionado &&
+            d.disponivel === true
+        );
+
+        const consultasOcupadas = listaDe(consultas).filter(c =>
+            Number(c.medico?.id) === Number(medicoId) &&
+            c.estado !== "CANCELADA" &&
+            c.dataHora?.substring(0, 10) === data
+        );
+
+        const ocupados = consultasOcupadas.map(c =>
+            c.dataHora.substring(11, 16)
+        );
+
+        const horarios = [];
+
+        horariosDia.forEach(d => {
+
+            let actual = d.horaInicio.substring(0, 5);
+            const fim = d.horaFim.substring(0, 5);
+
+            while (true) {
+
+                const [h, m] = actual.split(":").map(Number);
+
+                const proximo = new Date(2000, 0, 1, h, m + 30);
+
+                const proximaHora =
+                    String(proximo.getHours()).padStart(2, "0") +
+                    ":" +
+                    String(proximo.getMinutes()).padStart(2, "0");
+
+                if (proximaHora > fim) break;
+
+                if (!ocupados.includes(actual)) {
+                    horarios.push(actual);
+                }
+
+                actual = proximaHora;
+            }
+
+        });
+
+        const horariosUnicos = [...new Set(horarios)].sort();
+
+        if (!horariosUnicos.length) {
+
+            selectHora.innerHTML =
+                '<option value="">Sem horários disponíveis</option>';
+
+            informacao.textContent =
+                "Não existem horários livres para esta data.";
+
+            return;
+        }
+
+        selectHora.innerHTML =
+            '<option value="">Seleccione o horário</option>' +
+            horariosUnicos.map(h =>
+                `<option value="${h}">${h}</option>`
+            ).join("");
+
+        selectHora.disabled = false;
+
+        informacao.textContent =
+            horariosUnicos.length + " horários disponíveis.";
+
+    } catch (erro) {
+
+        selectHora.innerHTML =
+            '<option value="">Erro ao carregar horários</option>';
+
+        informacao.textContent = erro.message;
+
+    }
+
+}
+
+/* AGENDAR CONSULTA DO PACIENTE */
+
+async function submeterConsultaPaciente(evento) {
+
+    evento.preventDefault();
+
+    limparMensagem("mensagemConsultaPaciente");
+
+    const medicoId = document.getElementById("consultaPacienteMedico").value;
+    const data = document.getElementById("consultaPacienteData").value;
+    const hora = document.getElementById("consultaPacienteHora").value;
+
+    if (!medicoId || !data || !hora) {
+        mostrarMensagem(
+            "mensagemConsultaPaciente",
+            "Seleccione o médico, a data e o horário.",
+            "erro"
+        );
+        return;
+    }
+
+    const dados = {
+        medico: {
+            id: Number(medicoId)
+        },
+        dataHora: data + "T" + hora,
+        motivo: document.getElementById("consultaPacienteMotivo").value.trim()
+    };
+
+    try {
+
+        dados.dataHora = validarHorario(dados.dataHora);
+
+        await enviarDados(
+            "/consultas/minhas",
+            "POST",
+            dados
+        );
+
+        mostrarMensagem(
+            "mensagemConsultaPaciente",
+            "Consulta marcada com sucesso."
+        );
+
+        document.getElementById("formConsultaPaciente").reset();
+
+        document.getElementById("consultaPacienteHora").innerHTML =
+            '<option value="">Seleccione primeiro o médico e a data</option>';
+
+        document.getElementById("consultaPacienteHora").disabled = true;
+
+        document.getElementById("horariosDisponiveisInfo").textContent = "";
+
+        await carregarAreaPaciente();
+
+    } catch (erro) {
+
+        mostrarMensagem(
+            "mensagemConsultaPaciente",
+            erro.message,
+            "erro"
+        );
+
+    }
+
+}
+
+
+async function carregarDashboard() {
+
+    try {
+
+        // CARREGAR DADOS DO DASHBOARD
+
+        dadosDashboard = await obterDados("/relatorios/dashboard");
+
+        // INDICADORES PRINCIPAIS
+
+        document.getElementById("totalPacientes").textContent =
+            dadosDashboard.totalPacientes;
+
+        document.getElementById("totalMedicos").textContent =
+            dadosDashboard.totalMedicos;
+
+        document.getElementById("totalConsultasAdmin").textContent =
+            dadosDashboard.totalConsultas;
+
+        document.getElementById("consultasHojeAdmin").textContent =
+            dadosDashboard.consultasHoje;
+
+        // DATA ACTUAL DO PAINEL
+
+        document.getElementById("dataPainel").textContent =
+            new Date().toLocaleDateString("pt-PT", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+
+        // INDICADORES DOS RELATÓRIOS
+
+        document.getElementById("totalPacientesRelatorio").textContent =
+            dadosDashboard.totalPacientes;
+
+        document.getElementById("totalMedicosRelatorio").textContent =
+            dadosDashboard.totalMedicos;
+
+        document.getElementById("totalConsultasRelatorio").textContent =
+            dadosDashboard.totalConsultas;
+
+        document.getElementById("consultasConcluidasRelatorio").textContent =
+            dadosDashboard.consultasPorEstado.concluidas;
+
+        // ACTUALIZAR GRÁFICOS
+
+        renderGraficoEstados();
+        renderGraficoMensal();
+
+        // ACTUALIZAR LISTAS DA AGENDA
+
+        await carregarConsultasHoje(dadosDashboard);
+
+        // CARREGAR MÉDICOS PARA O FILTRO DOS RELATÓRIOS
+
+        await carregarMedicosRelatorio();
+
+        // INICIAR ACTUALIZAÇÃO AUTOMÁTICA
+
+        iniciarActualizacaoAgenda();
+
+    } catch (erro) {
+
+        console.error("Erro no dashboard:", erro);
+
+        document.getElementById("graficoEstados").innerHTML =
+            `<p class="vazio">${escaparHTML(erro.message)}</p>`;
+    }
+}
+
+
+async function carregarMedicosRelatorio() {
+
+    const select = document.getElementById("relatorioMedico");
+
+    if (!select) {
+        return;
+    }
+
+    try {
+
+        const resposta = await obterDados("/medicos");
+
+        const medicos = Array.isArray(resposta)
+            ? resposta
+            : listaDe(resposta);
+
+        select.innerHTML = `
+            <option value="">Todos os médicos</option>
+        `;
+
+        medicos.forEach(medico => {
+
+            const opcao = document.createElement("option");
+
+            opcao.value = medico.id;
+
+            opcao.textContent =
+                `${medico.nome} - ${medico.especialidade || "Sem especialidade"}`;
+
+            select.appendChild(opcao);
+        });
+
+    } catch (erro) {
+
+        console.error("Erro ao carregar médicos para os relatórios:", erro);
+    }
+}
+
+
+async function gerarRelatorioDetalhado(evento) {
+
+    evento.preventDefault();
+
+    const mensagem = document.getElementById("mensagemRelatorio");
+    const resumo = document.getElementById("resumoRelatorio");
+    const tabela = document.getElementById("tabelaRelatorio");
+
+    mensagem.textContent = "";
+    resumo.innerHTML = "";
+    tabela.innerHTML = "";
+
+    const dataInicio = document.getElementById("relatorioDataInicio").value;
+    const dataFim = document.getElementById("relatorioDataFim").value;
+
+    const horaInicio = document.getElementById("relatorioHoraInicio").value;
+    const horaFim = document.getElementById("relatorioHoraFim").value;
+
+    const estado = document.getElementById("relatorioEstado").value;
+    const medicoId = document.getElementById("relatorioMedico").value;
+
+    const especialidade = document
+        .getElementById("relatorioEspecialidade").value.trim();
+
+    if (!dataInicio || !dataFim) {
+        mensagem.textContent = "Indique as datas de início e fim.";
+        return;
+    }
+
+    if (dataInicio > dataFim) {
+        mensagem.textContent = "A data de início não pode ser posterior à data de fim.";
+        return;
+    }
+
+    if (horaInicio && horaFim && horaInicio > horaFim) {
+        mensagem.textContent = "A hora de início não pode ser posterior à hora de fim.";
+        return;
+    }
+
+    const parametros = new URLSearchParams();
+
+    parametros.append("dataInicio", `${dataInicio}T00:00:00`);
+    parametros.append("dataFim", `${dataFim}T23:59:59`);
+
+    if (horaInicio) parametros.append("horaInicio", `${horaInicio}:00`);
+    if (horaFim) parametros.append("horaFim", `${horaFim}:00`);
+    if (estado) parametros.append("estado", estado);
+    if (medicoId) parametros.append("medicoId", medicoId);
+    if (especialidade) parametros.append("especialidade", especialidade);
+
+    try {
+
+        mensagem.textContent = "A gerar relatório...";
+
+        const dados = await obterDados(
+            "/relatorios/consultas/detalhado?" + parametros.toString()
+        );
+
+        const consultas = listaDe(dados.consultas);
+
+        mensagem.textContent = "";
+
+        resumo.innerHTML = `
+            <div class="cartao-estatistica">
+                <span>Total de consultas encontradas</span>
+                <strong>${dados.totalConsultas ?? consultas.length}</strong>
+            </div>
+        `;
+
+        if (consultas.length === 0) {
+            tabela.innerHTML = `
+                <p class="vazio">
+                    Não foram encontradas consultas com os filtros indicados.
+                </p>
+            `;
+            return;
+        }
+
+        tabela.innerHTML = `
+            <div class="tabela-responsiva">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>N.º</th>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Especialidade</th>
+                            <th>Data e hora</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${consultas.map((consulta, indice) => `
+                            <tr>
+                                <td>${indice + 1}</td>
+                                <td>${escaparHTML(nomePaciente(consulta.paciente))}</td>
+                                <td>${escaparHTML(nomeMedico(consulta.medico))}</td>
+                                <td>${escaparHTML(consulta.medico?.especialidade || "Não indicada")}</td>
+                                <td>${formatarDataHora(consulta.dataHora)}</td>
+                                <td>${escaparHTML(consulta.motivo || "Não indicado")}</td>
+                                <td>${estadoHTML(consulta.estado)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+    } catch (erro) {
+
+        console.error("Erro ao gerar relatório:", erro);
+
+        mensagem.textContent =
+            erro.message || "Não foi possível gerar o relatório.";
+    }
+}
+
+
+
+// ACTUALIZAÇÃO AUTOMÁTICA DA AGENDA
+
+let temporizadorAgenda = null;
+
+function iniciarActualizacaoAgenda(){
+
+    // EVITAR CRIAR VÁRIOS TEMPORIZADORES
+
+    if(temporizadorAgenda !== null){
+
+        clearInterval(temporizadorAgenda);
+
+    }
+
+    // ACTUALIZAR A AGENDA A CADA 60 SEGUNDOS
+
+    temporizadorAgenda = setInterval(() => {
+
+        carregarConsultasHoje();
+
+    }, 60000);
+
+}
+
+
+
+function renderGraficoEstados(){
+
+ const dados=dadosDashboard.consultasPorEstado;
+
+ const total=dados.totalConsultas||1;
+
+ const estados=[
+  ["Marcadas",dados.marcadas,"barra-marcada"],
+  ["Concluídas",dados.concluidas,"barra-concluida"],
+  ["Canceladas",dados.canceladas,"barra-cancelada"]
+ ];
+
+ document.getElementById("graficoEstados").innerHTML=
+
+  estados.map(([nome,quantidade,classe])=>{
+
+   const percentagem=quantidade/total*100;
+
+   return `
+    <div class="barra-item">
+     <div class="barra-info">
+      <span>${nome}</span>
+      <strong>${quantidade}</strong>
+     </div>
+     <div class="barra-fundo">
+      <div class="barra-progresso ${classe}"
+       style="width:${percentagem}%"></div>
+     </div>
+    </div>
+   `;
+
+  }).join("");
+
+}
+
+function renderGraficoMensal(){
+
+ const desempenho=dadosDashboard.desempenhoMensal;
+
+ const meses=desempenho.desempenhoMensal;
+
+ const nomes=[
+  "Jan","Fev","Mar","Abr","Mai","Jun",
+  "Jul","Ago","Set","Out","Nov","Dez"
+ ];
+
+ const contagens=Array(12).fill(0);
+
+ meses.forEach(item=>{
+  contagens[item.mes-1]=item.totalConsultas;
+ });
+
+ const maximo=Math.max(...contagens,1);
+
+ document.getElementById("graficoMensal").innerHTML=`
+
+  <div class="grafico-mensal">
+
+   ${contagens.map((quantidade,indice)=>`
+
+    <div class="mes-grafico">
+
+     <span class="mes-valor">${quantidade}</span>
+
+     <div class="mes-coluna"
+      style="height:${Math.max(3,quantidade/maximo*130)}px"></div>
+
+     <span class="mes-nome">${nomes[indice]}</span>
+
+    </div>
+
+   `).join("")}
+
+  </div>
+
+ `;
+
+ document.getElementById("resumoAnual").textContent=
+
+  `No ano ${desempenho.ano} foram registadas ${desempenho.totalAnualConsultas} consultas.`;
+
+}
+
+
+async function actualizarDesempenhoMensal() {
+
+    const ano = Number(
+        document.getElementById("anoDashboard").value
+    );
+
+    try {
+
+        dadosDashboard.desempenhoMensal = await obterDados(
+            `/relatorios/desempenho-mensal?ano=${ano}`
+        );
+
+        console.log(
+            "Dados recebidos do backend:",
+            dadosDashboard.desempenhoMensal
+        );
+
+        renderGraficoMensal();
+
+    } catch (erro) {
+
+        console.error("Erro ao actualizar desempenho mensal:", erro);
+
+        document.getElementById("graficoMensal").innerHTML =
+            `<p class="vazio">${escaparHTML(erro.message)}</p>`;
+
+        document.getElementById("resumoAnual").textContent = "";
+    }
+}
+
+/* EVENTOS */
+
+
+function configurarEventos() {
+
+    document.getElementById("formLogin")
+        .addEventListener("submit", iniciarSessao);
+
+    document.getElementById("formCadastro")
+        .addEventListener("submit", submeterCadastro);
+
+    document.getElementById("formPaciente")
+        .addEventListener("submit", submeterPacienteAdmin);
+
+    document.getElementById("formMedico")
+        .addEventListener("submit", submeterMedico);
+
+    document.getElementById("formConsulta")
+        .addEventListener("submit", submeterConsultaAdmin);
+
+    document.getElementById("formConsultaPaciente")
+        .addEventListener("submit", submeterConsultaPaciente);
+
+    // ACTUALIZAR HORÁRIOS QUANDO O MÉDICO MUDA
+
+    document.getElementById("consultaPacienteMedico")
+        .addEventListener("change", carregarHorariosPaciente);
+
+    // ACTUALIZAR HORÁRIOS QUANDO A DATA MUDA
+
+    document.getElementById("consultaPacienteData")
+        .addEventListener("change", carregarHorariosPaciente);
+
+    document.getElementById("botaoLogout")
+        .addEventListener("click", terminarSessao);
+
+    document.getElementById("anoDashboard").value =
+        new Date().getFullYear();
+
+    document.getElementById("anoDashboard")
+        .addEventListener("change", actualizarDesempenhoMensal);
+
+    // FORMULÁRIO DE RELATÓRIOS
+
+    document.getElementById("formRelatorio")
+        .addEventListener("submit", gerarRelatorioDetalhado);
+
+    // DISPONIBILIDADE DOS MÉDICOS
+
+    document.getElementById("formDisponibilidade")
+        .addEventListener("submit", registarDisponibilidade);
+
+    document.getElementById("disponibilidadeMedico")
+        .addEventListener("change", carregarDisponibilidades);
+
+}
+
+function configurarNavegacao(){
+
+ document.querySelectorAll("[data-publico]").forEach(botao=>{
+
+  botao.addEventListener("click",()=>{
+
+   mostrarPublico(botao.dataset.publico);
+
+   if(botao.dataset.publico==="medicosPublicos"){
+
+    carregarMedicosPublicos();
+
+   }
+
+  });
+
+ });
+
+ document.querySelectorAll("[data-secao]").forEach(botao=>{
+
+  botao.addEventListener("click",()=>{
+
+   mostrarPrivado(botao.dataset.secao);
+
+  });
+
+ });
+
+}
+
+/* INICIALIZAÇÃO */
+document.addEventListener("DOMContentLoaded",async()=>{
+ configurarNavegacao();
+ configurarEventos();
+
+ await verificarSessao();
+
+ if(!utilizadorActual){
+  mostrarSecao("inicioPublico");
+  carregarMedicosPublicos();
+ }
+});
+</script>
+</body>
+</html>
