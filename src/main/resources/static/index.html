@@ -605,6 +605,7 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 </section>
 
 
+
 <section id="relatorios" class="secao privada">
 
     <div class="cabecalho-pagina">
@@ -619,7 +620,6 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
     </div>
 
     <!-- INDICADORES GERAIS -->
-
     <div class="grelha-cartoes">
 
         <div class="cartao-estatistica">
@@ -645,7 +645,6 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
     </div>
 
     <!-- FILTROS DOS RELATÓRIOS -->
-
     <div class="painel">
 
         <h2>Filtrar consultas</h2>
@@ -682,6 +681,7 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 
             <div class="campo">
                 <label for="relatorioEstado">Estado da consulta</label>
+
                 <select id="relatorioEstado">
                     <option value="">Todos os estados</option>
                     <option value="MARCADA">Marcada</option>
@@ -692,6 +692,7 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 
             <div class="campo">
                 <label for="relatorioMedico">Médico</label>
+
                 <select id="relatorioMedico">
                     <option value="">Todos os médicos</option>
                 </select>
@@ -699,6 +700,7 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 
             <div class="campo completo">
                 <label for="relatorioEspecialidade">Especialidade</label>
+
                 <input
                     type="text"
                     id="relatorioEspecialidade"
@@ -706,10 +708,21 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
                 >
             </div>
 
-            <div class="campo completo">
+            <!-- ACÇÕES DO RELATÓRIO -->
+            <div class="campo completo"
+                 style="display: flex; gap: 12px; flex-wrap: wrap;">
+
                 <button type="submit" class="btn-principal">
                     Gerar relatório
                 </button>
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="exportarRelatorioPDF()">
+                    Exportar PDF
+                </button>
+
             </div>
 
         </form>
@@ -717,12 +730,12 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
     </div>
 
     <!-- RESULTADO DO RELATÓRIO -->
-
     <div class="painel">
 
         <div class="painel-cabecalho">
             <div>
                 <h2>Resultado do relatório</h2>
+
                 <p class="subtitulo-painel">
                     Consultas encontradas de acordo com os filtros seleccionados.
                 </p>
@@ -2751,6 +2764,103 @@ async function gerarRelatorioDetalhado(evento) {
             erro.message || "Não foi possível gerar o relatório.";
     }
 }
+
+
+async function exportarRelatorioPDF() {
+
+    const mensagem = document.getElementById("mensagemRelatorio");
+
+    const dataInicio = document.getElementById("relatorioDataInicio").value;
+    const dataFim = document.getElementById("relatorioDataFim").value;
+
+    const horaInicio = document.getElementById("relatorioHoraInicio").value;
+    const horaFim = document.getElementById("relatorioHoraFim").value;
+
+    const estado = document.getElementById("relatorioEstado").value;
+    const medicoId = document.getElementById("relatorioMedico").value;
+
+    const especialidade = document
+        .getElementById("relatorioEspecialidade").value.trim();
+
+    if (!dataInicio || !dataFim) {
+        mensagem.textContent = "Indique as datas de início e fim.";
+        return;
+    }
+
+    if (dataInicio > dataFim) {
+        mensagem.textContent = "A data inicial não pode ser posterior à data final.";
+        return;
+    }
+
+    if (horaInicio && horaFim && horaInicio > horaFim) {
+        mensagem.textContent = "A hora inicial não pode ser posterior à hora final.";
+        return;
+    }
+
+    const parametros = new URLSearchParams();
+
+    parametros.append("dataInicio", `${dataInicio}T00:00:00`);
+    parametros.append("dataFim", `${dataFim}T23:59:59`);
+
+    if (horaInicio) parametros.append("horaInicio", `${horaInicio}:00`);
+    if (horaFim) parametros.append("horaFim", `${horaFim}:00`);
+    if (estado) parametros.append("estado", estado);
+    if (medicoId) parametros.append("medicoId", medicoId);
+    if (especialidade) parametros.append("especialidade", especialidade);
+
+    try {
+
+        mensagem.textContent = "A preparar o relatório PDF...";
+
+        const resposta = await fetch(
+            "/relatorios/consultas/detalhado/pdf?" + parametros.toString(),
+            {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store",
+                headers: {
+                    Accept: "application/pdf"
+                }
+            }
+        );
+
+        if (resposta.status === 401 || resposta.status === 403) {
+            throw new Error("Não tem autorização para exportar este relatório.");
+        }
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao gerar PDF. Código: " + resposta.status);
+        }
+
+        const ficheiro = await resposta.blob();
+
+        if (ficheiro.size === 0) {
+            throw new Error("O servidor devolveu um ficheiro vazio.");
+        }
+
+        const url = URL.createObjectURL(ficheiro);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "relatorio-consultas.pdf";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(url);
+
+        mensagem.textContent = "Relatório PDF exportado com sucesso.";
+
+    } catch (erro) {
+
+        console.error("Erro ao exportar relatório PDF:", erro);
+
+        mensagem.textContent = erro.message;
+
+    }
+}
+
 
 
 

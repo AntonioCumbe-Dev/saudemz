@@ -3,9 +3,13 @@ package com.saudemz.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.saudemz.service.RelatorioPdfService;
 import com.saudemz.service.RelatorioService;
 
 @RestController
@@ -20,9 +25,14 @@ import com.saudemz.service.RelatorioService;
 public class RelatorioController {
 
     private final RelatorioService relatorioService;
+    private final RelatorioPdfService relatorioPdfService;
 
-    public RelatorioController(RelatorioService relatorioService) {
+    public RelatorioController(
+            RelatorioService relatorioService,
+            RelatorioPdfService relatorioPdfService) {
+
         this.relatorioService = relatorioService;
+        this.relatorioPdfService = relatorioPdfService;
     }
 
     // RELATÓRIO GERAL POR ESTADO
@@ -81,11 +91,11 @@ public class RelatorioController {
 
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-            java.time.LocalTime horaInicio,
+            LocalTime horaInicio,
 
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-            java.time.LocalTime horaFim,
+            LocalTime horaFim,
 
             @RequestParam(required = false) String estado,
 
@@ -101,6 +111,55 @@ public class RelatorioController {
                 estado,
                 medicoId,
                 especialidade);
+    }
+
+    // EXPORTAR RELATÓRIO DETALHADO EM PDF
+    @GetMapping("/consultas/detalhado/pdf")
+    @PreAuthorize("hasRole('SUPERUTILIZADOR')")
+    public ResponseEntity<byte[]> exportarRelatorioPdf(
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime dataInicio,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime dataFim,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+            LocalTime horaInicio,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
+            LocalTime horaFim,
+
+            @RequestParam(required = false) String estado,
+
+            @RequestParam(required = false) Long medicoId,
+
+            @RequestParam(required = false) String especialidade) {
+
+        Map<String, Object> relatorio =
+                relatorioService.gerarRelatorioDetalhado(
+                        dataInicio,
+                        dataFim,
+                        horaInicio,
+                        horaFim,
+                        estado,
+                        medicoId,
+                        especialidade);
+
+        byte[] pdf =
+                relatorioPdfService.gerarRelatorioConsultas(relatorio);
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=relatorio-consultas.pdf"
+                )
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 
     // RELATÓRIO DE NOVOS PACIENTES
