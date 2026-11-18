@@ -1,4 +1,3 @@
-
 package com.saudemz;
 
 import org.springframework.context.annotation.Bean;
@@ -26,11 +25,8 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider(
             UsuarioDetailsService usuarioDetailsService) {
 
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(usuarioDetailsService);
-
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(usuarioDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-
         return provider;
     }
 
@@ -41,44 +37,54 @@ public class SecurityConfig {
             throws Exception {
 
         http
-            .authenticationProvider(authenticationProvider)
+                .authenticationProvider(authenticationProvider)
 
-            .csrf(csrf -> csrf.spa())
+                .csrf(csrf -> csrf.spa())
 
-            .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers(
-                    "/",
-                    "/index.html",
-                    "/favicon.ico",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
-                ).permitAll()
+                        // 1. Páginas e recursos públicos
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/favicon.ico",
+                                "/css/**",
+                                "/js/**",
+                                "/img/**",
+                                "/images/**")
+                        .permitAll()
 
-                .requestMatchers(
-                    HttpMethod.GET, "/medicos"
-                ).permitAll()
+                        // 2. Listagem pública de médicos (landing page)
+                        .requestMatchers(
+                                HttpMethod.GET, "/medicos")
+                        .permitAll()
 
-                .requestMatchers(
-                    HttpMethod.POST, "/pacientes/cadastro"
-                ).permitAll()
+                        // 3. Disponibilidades públicas (necessário para mostrar horários antes do
+                        // login)
+                        .requestMatchers(
+                                HttpMethod.GET, "/disponibilidades/**")
+                        .permitAll()
 
-                .requestMatchers(
-                    HttpMethod.GET, "/csrf"
-                ).permitAll()
+                        // 4. Registo público de pacientes
+                        .requestMatchers(
+                                HttpMethod.POST, "/pacientes/cadastro")
+                        .permitAll()
 
-                .requestMatchers(
-                    HttpMethod.GET, "/verificar-perfil"
-                ).permitAll()
+                        // 5. Token CSRF e verificação de perfil
+                        .requestMatchers(
+                                HttpMethod.GET, "/csrf")
+                        .permitAll()
 
-                .anyRequest().authenticated()
-            )
+                        .requestMatchers(
+                                HttpMethod.GET, "/verificar-perfil")
+                        .permitAll()
 
-            .formLogin(form -> form
-                .defaultSuccessUrl("/", true)
-                .permitAll()
-            );
+                        // 6. Restantes recursos protegidos
+                        .anyRequest().authenticated())
+
+                .formLogin(form -> form
+                        .defaultSuccessUrl("/", true)
+                        .permitAll());
 
         return http.build();
     }
