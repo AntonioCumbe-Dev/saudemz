@@ -1,3 +1,4 @@
+
 package com.saudemz.model;
 
 import java.time.DayOfWeek;

@@ -1,6 +1,8 @@
 package com.saudemz.controller;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.saudemz.model.DisponibilidadeMedico;
+import com.saudemz.service.ConsultaService;
 import com.saudemz.service.DisponibilidadeMedicoService;
 
 @RestController
@@ -16,10 +19,14 @@ import com.saudemz.service.DisponibilidadeMedicoService;
 public class DisponibilidadeMedicoController {
 
     private final DisponibilidadeMedicoService disponibilidadeService;
+    private final ConsultaService consultaService;
 
     public DisponibilidadeMedicoController(
-            DisponibilidadeMedicoService disponibilidadeService) {
+            DisponibilidadeMedicoService disponibilidadeService,
+            ConsultaService consultaService) {
+
         this.disponibilidadeService = disponibilidadeService;
+        this.consultaService = consultaService;
     }
 
     // REGISTAR HORÁRIO DE UM MÉDICO
@@ -51,6 +58,18 @@ public class DisponibilidadeMedicoController {
 
         return ResponseEntity.ok(
                 disponibilidadeService.listarPorDia(dia));
+    }
+
+    // CONSULTAR APENAS OS HORÁRIOS OCUPADOS DE UM MÉDICO NUMA DATA
+    @GetMapping("/medico/{medicoId}/ocupados")
+    public ResponseEntity<List<LocalTime>> listarHorariosOcupados(
+            @PathVariable Long medicoId,
+            @RequestParam LocalDate data) {
+
+        List<LocalTime> horarios =
+                consultaService.listarHorariosOcupados(medicoId, data);
+
+        return ResponseEntity.ok(horarios);
     }
 
     // DESACTIVAR HORÁRIO

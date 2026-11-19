@@ -16,6 +16,12 @@ button:disabled{opacity:.6;cursor:not-allowed}
 [hidden]{display:none!important}
 .topo{min-height:76px;background:white;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px clamp(18px,4vw,54px)}
 .marca{display:flex;align-items:center;gap:12px}
+.marca-logo{
+    width:46px;
+    height:46px;
+    object-fit:contain;
+    flex-shrink:0;
+}
 .marca-simbolo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--azul-suave);color:var(--azul);font-size:25px;font-weight:700}
 .marca h1{margin:0;font-size:20px;color:#29445f}
 .marca p{margin:4px 0 0;font-size:12px;color:var(--texto-suave)}
@@ -35,7 +41,13 @@ main{width:min(1320px,100%);margin:28px auto 50px;padding:0 24px}
 .boas-vindas{padding:25px;background:white;border:1px solid var(--borda);border-radius:var(--raio);margin-bottom:20px;box-shadow:var(--sombra);display:flex;justify-content:space-between;align-items:center;gap:18px}
 .boas-vindas h2{margin:0 0 8px;color:#2b4056;font-size:22px}
 .boas-vindas p{margin:0;color:var(--texto-suave);line-height:1.6}
-.boas-vindas-simbolo{flex:0 0 58px;width:58px;height:58px;display:grid;place-items:center;border-radius:16px;background:var(--azul-suave);color:var(--azul);font-size:27px}
+.boas-vindas-imagem{
+    flex:0 0 180px;
+    width:180px;
+    height:130px;
+    object-fit:cover;
+    border-radius:16px;
+}
 .indicadores,.grelha-cartoes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:21px}
 .indicador,.cartao-estatistica{background:white;border:1px solid var(--borda);border-radius:var(--raio);padding:18px;box-shadow:var(--sombra);min-height:100px}
 .indicador p,.cartao-estatistica span{margin:0;color:var(--texto-suave);font-size:12px}
@@ -43,6 +55,13 @@ main{width:min(1320px,100%);margin:28px auto 50px;padding:0 24px}
 .grelha-painel{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.9fr);gap:18px}
 .painel,.cartao{background:white;border:1px solid var(--borda);border-radius:var(--raio);padding:21px;margin-bottom:18px;box-shadow:var(--sombra);min-width:0}
 .painel h2,.cartao h3{margin:0;color:#344b62;font-size:16px}
+.logo-autenticacao{
+    display:block;
+    width:65px;
+    height:65px;
+    object-fit:contain;
+    margin:0 auto 16px;
+}
 .painel-cabecalho{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
 .subtitulo-painel{margin:5px 0 0;color:var(--texto-suave);font-size:12px}
 .atalhos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -136,12 +155,13 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 </head>
 <body>
 <header class="topo">
- <div class="marca"><div class="marca-simbolo">+</div><div><h1>Saúde+ MZ</h1><p>Sistema de Gestão Clínica</p></div></div>
+ <div class="marca"><img src="img/logo-saudemz.png" alt="Saúde+ MZ" class="marca-logo"><div><h1>Saúde+ MZ</h1><p>Sistema de Gestão Clínica</p></div></div>
  <div class="utilizador" id="areaUtilizador" hidden><div class="identidade"><span id="emailUtilizador" class="email"></span><span id="perfilUtilizador" class="perfil"></span></div><button type="button" class="btn-secundario" id="botaoLogout">Terminar sessão</button></div>
 </header>
 <nav class="barra-navegacao" id="navegacaoPublica">
  <button class="active" data-publico="inicioPublico">Início</button>
  <button data-publico="medicosPublicos">Médicos</button>
+ <button data-publico="marcacaoPublica">Marcar consulta</button>
  <button data-publico="login">Entrar</button>
  <button data-publico="cadastro">Criar conta</button>
 </nav>
@@ -151,7 +171,7 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
 <section id="inicioPublico" class="secao active">
  <div class="boas-vindas">
   <div><h2>Bem-vindo ao Saúde+ MZ</h2><p>Uma plataforma de gestão clínica para facilitar o acesso aos serviços de saúde, organizar consultas e aproximar pacientes e profissionais.</p><br><button class="btn-principal" onclick="mostrarPublico('login')">Aceder à plataforma</button> <button class="btn-secundario" onclick="mostrarPublico('medicosPublicos')">Conhecer médicos</button></div>
-  <div class="boas-vindas-simbolo">+</div>
+  <img src="img/hero-team.png" alt="Equipa médica do Saúde+ MZ" class="boas-vindas-imagem" onerror="this.onerror=null;this.src='img/sobre-team.png';">
  </div>
  <div class="grelha-painel">
   <div class="painel"><h2>Os nossos serviços</h2><br><div class="atalhos"><div class="atalho"><strong>Consultas</strong><span>Organização e acompanhamento de consultas.</span></div><div class="atalho"><strong>Profissionais</strong><span>Conheça os médicos e as suas especialidades.</span></div><div class="atalho"><strong>Gestão clínica</strong><span>Gestão organizada de pacientes e atendimentos.</span></div></div></div>
@@ -164,8 +184,76 @@ footer{text-align:center;color:#98a3af;padding:22px;font-size:11px}
  <div id="mensagemMedicosPublicos" class="mensagem"></div><div id="listaMedicosPublicos" class="cartoes-medicos"></div>
 </section>
 
+<section id="marcacaoPublica" class="secao">
+
+    <div class="cabecalho-pagina">
+        <div>
+            <h2>Marcar consulta</h2>
+            <p>Escolha a especialidade, o médico e o horário disponível.</p>
+        </div>
+    </div>
+
+    <div class="autenticacao">
+        <div class="painel">
+
+            <img src="img/logo-saudemz.png"
+                 alt="Saúde+ MZ"
+                 class="logo-autenticacao">
+
+            <div id="mensagemMarcacao" class="mensagem"></div>
+
+            <form id="formMarcacaoPublica" class="formulario">
+
+                <div class="campo completo">
+                    <label for="marcacaoEspecialidade">Especialidade</label>
+                    <select id="marcacaoEspecialidade" required>
+                        <option value="">Seleccione a especialidade</option>
+                    </select>
+                </div>
+
+                <div class="campo completo">
+                    <label for="marcacaoMedico">Médico</label>
+                    <select id="marcacaoMedico" required disabled>
+                        <option value="">Seleccione primeiro a especialidade</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="marcacaoData">Data</label>
+                    <input type="date" id="marcacaoData" required disabled>
+                </div>
+
+                <div class="campo">
+                    <label for="marcacaoHora">Horário disponível</label>
+                    <select id="marcacaoHora" required disabled>
+                        <option value="">Seleccione primeiro a data</option>
+                    </select>
+                </div>
+
+                <div class="campo completo">
+                    <label for="marcacaoMotivo">Motivo da consulta</label>
+                    <input type="text" id="marcacaoMotivo"
+                           placeholder="Indique o motivo da consulta"
+                           required>
+                </div>
+
+                <div class="campo completo">
+                    <button type="submit" class="btn-principal">
+                        Confirmar marcação
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+
 <section id="login" class="secao">
- <div class="autenticacao"><div class="painel"><h2>Iniciar sessão</h2><p class="descricao">Introduza as suas credenciais para aceder à sua área de trabalho.</p>
+	<div class="autenticacao"><div class="painel">
+	<img src="img/logo-saudemz.png" alt="Saúde+ MZ" class="logo-autenticacao">
+	<h2>Iniciar sessão</h2><p class="descricao">Introduza as suas credenciais para aceder à sua área de trabalho.</p>
   <div id="mensagemLogin" class="mensagem"></div>
   <form id="formLogin" class="formulario">
    <div class="campo completo"><label for="loginEmail">Email</label><input type="email" id="loginEmail" required autocomplete="username"></div>
@@ -1007,7 +1095,9 @@ const API = {
     consultas: "/consultas",
     pacientes: "/pacientes",
 	cadastroPaciente: "/pacientes/cadastro",
-    medicos: "/medicos"
+	medicos: "/medicos",
+	disponibilidades: "/disponibilidades",
+	consultasMinhas: "/consultas/minhas"
 };
 // VARIÁVEIS GLOBAIS
 let cacheMedicos = [];
@@ -1527,7 +1617,28 @@ async function iniciarSessao(evento){
   }
 
   limparMensagem("mensagemLogin");
+
   formulario.reset();
+
+  const pendente = sessionStorage.getItem("marcacaoPendente");
+
+  if (pendente && ePaciente()) {
+
+      const dados = JSON.parse(pendente);
+
+      try {
+
+          await restaurarMarcacaoPendente(dados);
+
+          sessionStorage.removeItem("marcacaoPendente");
+
+      } catch (erro) {
+
+          mostrarMensagem("mensagemMarcacao", erro.message, "erro");
+
+      }
+
+  }
 
  }catch(erro){
   console.error("Erro durante o login:",erro);
@@ -1614,6 +1725,7 @@ async function carregarMedicosPublicos(){
   const dados=listaDe(await obterDados(API.medicos));
   cacheMedicos=dados;
   popularSelects();
+  popularEspecialidadesMarcacao();
 
   if(!dados.length){
    area.innerHTML='<p class="vazio">Ainda não existem médicos registados.</p>';
@@ -1746,6 +1858,319 @@ function popularSelects(){
  }
 
 }
+
+function popularEspecialidadesMarcacao(){
+
+    const elemento = document.getElementById("marcacaoEspecialidade");
+
+    if (!elemento) return;
+
+    const especialidades = [...new Set(
+        cacheMedicos
+            .map(m => m.especialidade)
+            .filter(e => e && e.trim() !== "")
+    )].sort();
+
+    elemento.innerHTML =
+        '<option value="">Seleccione a especialidade</option>' +
+        especialidades.map(e =>
+            `<option value="${escaparHTML(e)}">${escaparHTML(e)}</option>`
+        ).join("");
+}
+
+function atualizarMedicosMarcacao(){
+
+    const especialidade = document.getElementById("marcacaoEspecialidade").value;
+    const selectMedico = document.getElementById("marcacaoMedico");
+    const selectData = document.getElementById("marcacaoData");
+    const selectHora = document.getElementById("marcacaoHora");
+
+    const medicos = cacheMedicos.filter(m =>
+        m.especialidade === especialidade
+    );
+
+    selectMedico.innerHTML =
+        '<option value="">Seleccione o médico</option>' +
+        medicos.map(m =>
+            `<option value="${escaparHTML(m.id)}">${escaparHTML(m.nome)}</option>`
+        ).join("");
+
+    selectMedico.disabled = medicos.length === 0;
+    selectData.disabled = true;
+    selectData.value = "";
+    selectHora.innerHTML = '<option value="">Seleccione primeiro a data</option>';
+    selectHora.disabled = true;
+}
+
+
+async function atualizarHorariosMarcacao(){
+
+    const medicoId = document.getElementById("marcacaoMedico").value;
+    const campoData = document.getElementById("marcacaoData");
+    const campoHora = document.getElementById("marcacaoHora");
+    const mensagem = document.getElementById("mensagemMarcacao");
+
+    campoHora.innerHTML = '<option value="">Seleccione o horário</option>';
+    campoHora.disabled = true;
+    mensagem.textContent = "";
+
+    if (!medicoId) {
+        campoData.disabled = true;
+        return;
+    }
+
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+    const dataMinima = `${ano}-${mes}-${dia}`;
+
+    campoData.min = dataMinima;
+    campoData.disabled = false;
+
+    const data = campoData.value;
+
+    if (!data) {
+        campoHora.innerHTML =
+            '<option value="">Seleccione primeiro a data</option>';
+        return;
+    }
+
+    if (data < dataMinima) {
+        mensagem.textContent = "Seleccione uma data actual ou futura.";
+        return;
+    }
+
+    try {
+
+        const urlDisponibilidade =
+            API.disponibilidades + "/medico/" + encodeURIComponent(medicoId);
+
+        const urlOcupados =
+            API.disponibilidades + "/medico/" +
+            encodeURIComponent(medicoId) +
+            "/ocupados?data=" + encodeURIComponent(data);
+
+        const [dadosDisponibilidade, dadosOcupados] = await Promise.all([
+            obterDados(urlDisponibilidade),
+            obterDados(urlOcupados)
+        ]);
+
+        const disponibilidades = listaDe(dadosDisponibilidade);
+        const ocupados = listaDe(dadosOcupados);
+
+        const partesData = data.split("-").map(Number);
+
+        const diaSemana = [
+            "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
+            "THURSDAY", "FRIDAY", "SATURDAY"
+        ][new Date(
+            partesData[0],
+            partesData[1] - 1,
+            partesData[2]
+        ).getDay()];
+
+        const horarios = disponibilidades.filter(d =>
+            d.disponivel === true && d.diaSemana === diaSemana
+        );
+
+        if (!horarios.length) {
+            campoHora.innerHTML =
+                '<option value="">Sem disponibilidade neste dia</option>';
+            mensagem.textContent =
+                "O médico não tem horário disponível nesta data.";
+            return;
+        }
+
+        const ocupadosSet = new Set(
+            ocupados.map(h => String(h).substring(0, 5))
+        );
+
+        const opcoes = [];
+
+        horarios.forEach(horario => {
+
+            const inicio = horario.horaInicio.split(":").map(Number);
+            const fim = horario.horaFim.split(":").map(Number);
+
+            let minutosInicio = inicio[0] * 60 + inicio[1];
+            const minutosFim = fim[0] * 60 + fim[1];
+
+            while (minutosInicio + 30 <= minutosFim) {
+
+                const horas = String(
+                    Math.floor(minutosInicio / 60)
+                ).padStart(2, "0");
+
+                const minutos = String(
+                    minutosInicio % 60
+                ).padStart(2, "0");
+
+                const hora = `${horas}:${minutos}`;
+
+                if (!ocupadosSet.has(hora)) {
+                    opcoes.push(hora);
+                }
+
+                minutosInicio += 30;
+            }
+        });
+
+        const horariosLivres = [...new Set(opcoes)].sort();
+
+        if (!horariosLivres.length) {
+            campoHora.innerHTML =
+                '<option value="">Sem horários disponíveis</option>';
+            mensagem.textContent = "Todos os horários estão ocupados.";
+            return;
+        }
+
+        campoHora.innerHTML =
+            '<option value="">Seleccione o horário</option>' +
+            horariosLivres.map(h =>
+                `<option value="${h}">${h}</option>`
+            ).join("");
+
+        campoHora.disabled = false;
+
+    } catch (erro) {
+
+        mensagem.textContent =
+            "Não foi possível carregar os horários. Tente novamente.";
+
+        console.error("Erro ao carregar horários:", erro);
+    }
+}
+
+
+async function restaurarMarcacaoPendente(dados){
+
+    await carregarMedicosPublicos();
+
+    const medico = cacheMedicos.find(
+        m => Number(m.id) === Number(dados.medicoId)
+    );
+
+    if (!medico) {
+        throw new Error("O médico da marcação já não está disponível.");
+    }
+
+    mostrarPublico("marcacaoPublica");
+
+    const selectEspecialidade =
+        document.getElementById("marcacaoEspecialidade");
+
+    selectEspecialidade.value = medico.especialidade;
+
+    atualizarMedicosMarcacao();
+
+    const selectMedico =
+        document.getElementById("marcacaoMedico");
+
+    selectMedico.value = dados.medicoId;
+
+    const campoData =
+        document.getElementById("marcacaoData");
+
+    campoData.value = dados.data;
+
+    await atualizarHorariosMarcacao();
+
+    document.getElementById("marcacaoHora").value = dados.hora;
+
+    document.getElementById("marcacaoMotivo").value = dados.motivo;
+}
+
+
+
+async function submeterMarcacaoPublica(evento){
+
+    evento.preventDefault();
+
+    const mensagem = document.getElementById("mensagemMarcacao");
+
+    mensagem.textContent = "";
+
+    const medicoId = document.getElementById("marcacaoMedico").value;
+    const data = document.getElementById("marcacaoData").value;
+    const hora = document.getElementById("marcacaoHora").value;
+    const motivo = document.getElementById("marcacaoMotivo").value.trim();
+
+    if (!medicoId || !data || !hora || !motivo) {
+        mensagem.textContent = "Preencha todos os campos da marcação.";
+        return;
+    }
+
+	if (!utilizadorActual) {
+
+	    sessionStorage.setItem("marcacaoPendente", JSON.stringify({
+	        medicoId: medicoId,
+	        data: data,
+	        hora: hora,
+	        motivo: motivo
+	    }));
+
+	    mensagem.textContent = "Os dados da marcação foram guardados. Inicie sessão para continuar.";
+
+	    mostrarPublico("login");
+
+	    return;
+
+	}
+
+	if (!ePaciente()) {
+
+	    mensagem.textContent = "Apenas pacientes podem confirmar marcações.";
+
+	    return;
+
+	}
+    const dados = {
+        medico: {
+            id: Number(medicoId)
+        },
+        dataHora: data + "T" + hora,
+        motivo: motivo
+    };
+
+    try {
+
+        dados.dataHora = validarHorario(dados.dataHora);
+
+        await enviarDados(
+            API.consultasMinhas,
+            "POST",
+            dados
+        );
+
+        mensagem.textContent = "Consulta marcada com sucesso.";
+
+        document.getElementById("formMarcacaoPublica").reset();
+
+        document.getElementById("marcacaoMedico").innerHTML =
+            '<option value="">Seleccione primeiro a especialidade</option>';
+
+        document.getElementById("marcacaoMedico").disabled = true;
+
+        document.getElementById("marcacaoData").disabled = true;
+
+        document.getElementById("marcacaoHora").innerHTML =
+            '<option value="">Seleccione primeiro a data</option>';
+
+        document.getElementById("marcacaoHora").disabled = true;
+
+        await carregarAreaPaciente();
+
+    } catch (erro) {
+
+        mensagem.textContent =
+            erro.message || "Não foi possível efectuar a marcação.";
+
+        console.error("Erro na marcação pública:", erro);
+    }
+}
+
+
 async function registarDisponibilidade(evento){
 
  evento.preventDefault();
@@ -2861,6 +3286,84 @@ async function exportarRelatorioPDF() {
     }
 }
 
+async function carregarConsultasHoje(dados = null) {
+    try {
+        const dadosAgenda = dados || await obterDados("/relatorios/dashboard");
+
+        const consultasHoje = dadosAgenda.listaConsultasHoje || [];
+        const proximasConsultas = dadosAgenda.proximasConsultas || [];
+
+        function construirTabelaAgenda(consultas, mensagem) {
+            if (!consultas.length) {
+                return `<p class="vazio">${mensagem}</p>`;
+            }
+
+            return `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Paciente</th>
+                            <th>Médico</th>
+                            <th>Data e hora</th>
+                            <th>Motivo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${consultas.map(c => `
+                            <tr>
+                                <td>${escaparHTML(nomePaciente(c))}</td>
+                                <td>${escaparHTML(nomeMedico(c))}</td>
+                                <td>${formatarDataHora(c.dataHora)}</td>
+                                <td>${escaparHTML(c.motivo || "-")}</td>
+                                <td>${estadoHTML(c.estado)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        const tabelaHoje = document.getElementById("tabelaConsultasHoje");
+
+        if (tabelaHoje) {
+            tabelaHoje.innerHTML = construirTabelaAgenda(
+                consultasHoje,
+                "Não existem consultas para hoje."
+            );
+        }
+
+        const tabelaProximas = document.getElementById("tabelaProximasConsultas");
+
+        if (tabelaProximas) {
+            tabelaProximas.innerHTML = construirTabelaAgenda(
+                proximasConsultas,
+                "Não existem próximas consultas."
+            );
+        }
+
+        const actualizacao = document.getElementById("ultimaActualizacaoAgenda");
+
+        if (actualizacao) {
+            actualizacao.textContent =
+                "Última actualização: " + new Date().toLocaleTimeString("pt-PT");
+        }
+
+    } catch (erro) {
+        console.error("Erro ao carregar agenda:", erro);
+
+        const tabelaHoje = document.getElementById("tabelaConsultasHoje");
+        const tabelaProximas = document.getElementById("tabelaProximasConsultas");
+
+        if (tabelaHoje) {
+            tabelaHoje.innerHTML = `<p class="vazio">${escaparHTML(erro.message)}</p>`;
+        }
+
+        if (tabelaProximas) {
+            tabelaProximas.innerHTML = `<p class="vazio">${escaparHTML(erro.message)}</p>`;
+        }
+    }
+}
 
 
 
@@ -3059,6 +3562,20 @@ function configurarEventos() {
     document.getElementById("disponibilidadeMedico")
         .addEventListener("change", carregarDisponibilidades);
 
+		// MARCAÇÃO PÚBLICA DE CONSULTAS
+
+		document.getElementById("marcacaoEspecialidade")
+		    .addEventListener("change", atualizarMedicosMarcacao);
+
+		document.getElementById("marcacaoMedico")
+		    .addEventListener("change", atualizarHorariosMarcacao);
+
+		document.getElementById("marcacaoData")
+		    .addEventListener("change", atualizarHorariosMarcacao);
+
+		document.getElementById("formMarcacaoPublica")
+		    .addEventListener("submit", submeterMarcacaoPublica);
+
 }
 
 function configurarNavegacao(){
@@ -3069,9 +3586,12 @@ function configurarNavegacao(){
 
    mostrarPublico(botao.dataset.publico);
 
-   if(botao.dataset.publico==="medicosPublicos"){
+   if(
+       botao.dataset.publico==="medicosPublicos" ||
+       botao.dataset.publico==="marcacaoPublica"
+   ){
 
-    carregarMedicosPublicos();
+       carregarMedicosPublicos();
 
    }
 

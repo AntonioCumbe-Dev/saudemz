@@ -47,31 +47,43 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
+                // Recursos públicos
                 .requestMatchers(
                     "/",
                     "/index.html",
                     "/favicon.ico",
                     "/css/**",
                     "/js/**",
-                    "/images/**"
+                    "/images/**",
+                    "/img/**"
                 ).permitAll()
 
+                // Listagem pública de médicos
                 .requestMatchers(
                     HttpMethod.GET, "/medicos"
                 ).permitAll()
 
+                // Consulta pública de disponibilidades
+                .requestMatchers(
+                    HttpMethod.GET, "/disponibilidades/**"
+                ).permitAll()
+
+                // Cadastro público de pacientes
                 .requestMatchers(
                     HttpMethod.POST, "/pacientes/cadastro"
                 ).permitAll()
 
+                // Obtenção do token CSRF
                 .requestMatchers(
                     HttpMethod.GET, "/csrf"
                 ).permitAll()
 
+                // Verificação de perfil
                 .requestMatchers(
                     HttpMethod.GET, "/verificar-perfil"
                 ).permitAll()
 
+                // Restantes operações exigem autenticação
                 .anyRequest().authenticated()
             )
 
